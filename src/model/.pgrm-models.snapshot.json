@@ -1,0 +1,50 @@
+{
+  "tables": [
+    "demo_events",
+    "departments",
+    "employees",
+    "invoices",
+    "local_users",
+    "locations",
+    "organisations",
+    "timesheets"
+  ],
+  "associations": [
+    "departments__location_id",
+    "employees__department_id",
+    "employees__user_id",
+    "invoices__department_id",
+    "locations__organisation_id",
+    "timesheets__employee_id",
+    "timesheets__owner_id"
+  ],
+  "defaults": {
+    "demo_events.emitted_at": "now()",
+    "departments.created_by_display_name": "'System'::text",
+    "departments.created_at": "now()",
+    "departments.last_updated_by_display_name": "'System'::text",
+    "departments.last_updated_at": "now()",
+    "employees.created_by_display_name": "'System'::text",
+    "employees.created_at": "now()",
+    "employees.last_updated_by_display_name": "'System'::text",
+    "employees.last_updated_at": "now()",
+    "invoices.status": "'open'::text",
+    "invoices.created_by_display_name": "'System'::text",
+    "invoices.created_at": "now()",
+    "invoices.last_updated_by_display_name": "'System'::text",
+    "invoices.last_updated_at": "now()",
+    "locations.created_by_display_name": "'System'::text",
+    "locations.created_at": "now()",
+    "locations.last_updated_by_display_name": "'System'::text",
+    "locations.last_updated_at": "now()",
+    "organisations.created_by_display_name": "'System'::text",
+    "organisations.created_at": "now()",
+    "organisations.last_updated_by_display_name": "'System'::text",
+    "organisations.last_updated_at": "now()",
+    "timesheets.status": "'draft'::text",
+    "timesheets.created_by_display_name": "'System'::text",
+    "timesheets.created_at": "now()",
+    "timesheets.last_updated_by_display_name": "'System'::text",
+    "timesheets.last_updated_at": "now()"
+  }
+}

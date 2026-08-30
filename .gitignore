@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+.env.*
+*.log
+.DS_Store
+
+# Local scratch — probe scripts are throwaway, never committed
+scripts/_*.ts
+
+# The framework tarball is a local file: dependency; never vendored into the repo
+*.tgz

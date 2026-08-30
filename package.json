@@ -1,0 +1,37 @@
+{
+  "name": "customapis-demo",
+  "version": "0.1.0",
+  "description": "Public demo environment for customapis.co — read it, don't run it.",
+  "type": "module",
+  "private": true,
+  "license": "SEE LICENSE IN LICENSE",
+  "scripts": {
+    "preinstall": "node -e \"const f='../pgrm/pgrm-0.0.0.tgz';if(!require('fs').existsSync(f))console.error('\\n  This repository is not runnable from a clean clone.\\n'+'  It depends on pgrm — the framework underneath — which is not published,\\n'+'  so the install below will fail on '+f+'.\\n\\n'+'  That is expected. Read the source instead, and call the live API at\\n'+'  https://timesheetdemo.customapis.co — see README.md.\\n')\"",
+    "start": "tsx src/server.ts",
+    "dev": "npm run dev:up && npm start",
+    "dev:up": "bash scripts/dev-up.sh",
+    "generate": "bash scripts/generate.sh",
+    "typecheck": "tsc --noEmit",
+    "check": "pgrm check --routes",
+    "guarantees": "npm run db:reset && tsx scripts/guarantees.ts",
+    "replay": "npm run db:reset && tsx scripts/replay.ts",
+    "verify": "npm run typecheck && npm run check && npm run guarantees && npm run replay",
+    "transcript": "npm run db:reset && tsx scripts/replay.ts --write",
+    "db:reset": "docker exec -i customapis_demo_db psql -U demo -d customapis_demo -q -v ON_ERROR_STOP=1 < db/seed.sql",
+    "db:schema": "docker exec -i customapis_demo_db psql -U demo -d customapis_demo"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "pg": "^8.13.1",
+    "pgrm": "file:../pgrm/pgrm-0.0.0.tgz",
+    "sequelize": "^6.37.5",
+    "ws": "^8.21.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.5",
+    "@types/ws": "^8.18.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

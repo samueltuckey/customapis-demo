@@ -1,0 +1,319 @@
+{
+  "employee": {
+    "userId": 41,
+    "displayName": "Alice Nguyen",
+    "kind": "human",
+    "company": {
+      "id": 1,
+      "name": "Harbourline Hospitality"
+    },
+    "ownerScoped": true,
+    "grants": {
+      "customapis_get_timesheets": [
+        "1",
+        "3"
+      ],
+      "customapis_search_timesheets": [
+        "1",
+        "3"
+      ],
+      "customapis_create_timesheets": [
+        "3"
+      ],
+      "customapis_get_employees": [
+        "1"
+      ],
+      "customapis_search_employees": [
+        "1"
+      ],
+      "customapis_read_activity": [
+        "1",
+        "3"
+      ]
+    },
+    "demo": {
+      "cannot": [
+        {
+          "plain": "See a colleague's timesheet",
+          "why": "owner scope",
+          "expect": 404
+        },
+        {
+          "plain": "Approve a timesheet",
+          "why": "no such permission",
+          "expect": 403
+        },
+        {
+          "plain": "See cost rates",
+          "why": "field visibility",
+          "expect": "field absent"
+        },
+        {
+          "plain": "See another company",
+          "why": "tenant scope",
+          "expect": 404
+        },
+        {
+          "plain": "Write to your own company",
+          "why": "read-only company",
+          "expect": 404
+        }
+      ],
+      "tryThis": [
+        "GET /timesheets/1042",
+        "POST /timesheets/1041/approve",
+        "GET /timesheets/1043"
+      ]
+    }
+  },
+  "duty_manager": {
+    "userId": 42,
+    "displayName": "Sam Okafor",
+    "kind": "human",
+    "company": {
+      "id": 1,
+      "name": "Harbourline Hospitality"
+    },
+    "ownerScoped": false,
+    "grants": {
+      "customapis_get_timesheets": [
+        "1",
+        "3"
+      ],
+      "customapis_search_timesheets": [
+        "1",
+        "3"
+      ],
+      "customapis_create_timesheets": [
+        "3"
+      ],
+      "customapis_update_timesheets": [
+        "3"
+      ],
+      "customapis_admin_timesheets": [
+        "1",
+        "3"
+      ],
+      "customapis_get_employees": [
+        "1"
+      ],
+      "customapis_search_employees": [
+        "1"
+      ],
+      "customapis_read_activity": [
+        "1",
+        "3"
+      ]
+    },
+    "demo": {
+      "cannot": [
+        {
+          "plain": "See cost rates",
+          "why": "field visibility",
+          "expect": "field absent"
+        },
+        {
+          "plain": "See invoices",
+          "why": "no such permission",
+          "expect": 403
+        },
+        {
+          "plain": "See another company",
+          "why": "tenant scope",
+          "expect": 404
+        },
+        {
+          "plain": "Approve a timesheet in your own company",
+          "why": "read-only company",
+          "expect": 404
+        }
+      ],
+      "tryThis": [
+        "GET /timesheets/1042",
+        "GET /timesheets/1045",
+        "POST /timesheets/1041/approve",
+        "POST /timesheets/1046/approve"
+      ]
+    }
+  },
+  "department_manager": {
+    "userId": 47,
+    "displayName": "Tomas Ferreira",
+    "kind": "human",
+    "company": {
+      "id": 1,
+      "name": "Harbourline Hospitality"
+    },
+    "ownerScoped": false,
+    "departments": [
+      "8"
+    ],
+    "grants": {
+      "customapis_get_timesheets": [
+        "1",
+        "3"
+      ],
+      "customapis_search_timesheets": [
+        "1",
+        "3"
+      ],
+      "customapis_create_timesheets": [
+        "3"
+      ],
+      "customapis_update_timesheets": [
+        "3"
+      ],
+      "customapis_admin_timesheets": [
+        "1",
+        "3"
+      ],
+      "customapis_get_employees": [
+        "1"
+      ],
+      "customapis_search_employees": [
+        "1"
+      ],
+      "customapis_read_activity": [
+        "1",
+        "3"
+      ]
+    },
+    "demo": {
+      "cannot": [
+        {
+          "plain": "See another department's timesheet",
+          "why": "path restriction",
+          "expect": 404
+        },
+        {
+          "plain": "See cost rates",
+          "why": "field visibility",
+          "expect": "field absent"
+        },
+        {
+          "plain": "See another company",
+          "why": "tenant scope",
+          "expect": 404
+        },
+        {
+          "plain": "Approve a timesheet in your own company",
+          "why": "read-only company",
+          "expect": 404
+        }
+      ],
+      "tryThis": [
+        "GET /timesheets/1041",
+        "GET /timesheets/1045",
+        "POST /timesheets/1041/approve"
+      ]
+    }
+  },
+  "payroll": {
+    "userId": 43,
+    "displayName": "Priya Raman",
+    "kind": "human",
+    "company": {
+      "id": 1,
+      "name": "Harbourline Hospitality"
+    },
+    "ownerScoped": false,
+    "grants": {
+      "customapis_get_timesheets": [
+        "1",
+        "3"
+      ],
+      "customapis_search_timesheets": [
+        "1",
+        "3"
+      ],
+      "customapis_admin_timesheets": [
+        "1",
+        "3"
+      ],
+      "customapis_get_invoices": [
+        "1"
+      ],
+      "customapis_search_invoices": [
+        "1"
+      ],
+      "customapis_get_employees": [
+        "1"
+      ],
+      "customapis_search_employees": [
+        "1"
+      ],
+      "customapis_read_activity": [
+        "1",
+        "3"
+      ],
+      "customapis_read_cost_rate": [
+        "1",
+        "3"
+      ]
+    },
+    "demo": {
+      "cannot": [
+        {
+          "plain": "See another company",
+          "why": "tenant scope",
+          "expect": 404
+        },
+        {
+          "plain": "Approve a timesheet",
+          "why": "no such permission",
+          "expect": 403
+        }
+      ],
+      "tryThis": [
+        "GET /timesheets/1041",
+        "GET /timesheets/1043"
+      ]
+    }
+  },
+  "kestrel_payroll": {
+    "userId": 44,
+    "displayName": "Omar Haddad",
+    "kind": "human",
+    "company": {
+      "id": 2,
+      "name": "Kestrel Facilities Group"
+    },
+    "ownerScoped": false,
+    "grants": {
+      "customapis_get_timesheets": [
+        "2"
+      ],
+      "customapis_search_timesheets": [
+        "2"
+      ],
+      "customapis_admin_timesheets": [
+        "2"
+      ],
+      "customapis_get_employees": [
+        "2"
+      ],
+      "customapis_search_employees": [
+        "2"
+      ],
+      "customapis_read_activity": [
+        "2"
+      ],
+      "customapis_read_cost_rate": [
+        "2"
+      ]
+    },
+    "demo": {
+      "cannot": [
+        {
+          "plain": "See any Harbourline record, including by direct id",
+          "why": "tenant scope",
+          "expect": 404
+        }
+      ],
+      "tryThis": [
+        "GET /timesheets/1041",
+        "GET /timesheets/1043"
+      ]
+    }
+  }
+}
