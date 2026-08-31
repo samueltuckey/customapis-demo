@@ -27,7 +27,7 @@
 import { writeFileSync } from 'node:fs';
 import type { Server } from 'node:http';
 import { buildFramework, createApp } from '../src/server.js';
-import { CHALLENGES, type Step } from './challenges.js';
+import { CHALLENGES, type Step } from '../src/demo/challenges.js';
 import { PERSONA_DIRECTORY, keyForPersona, type PersonaName } from '../src/demo/keys.js';
 
 const BASE_URL = process.env.DEMO_BASE_URL ?? 'https://timesheetdemo.customapis.co';

@@ -87,6 +87,16 @@ const CUSTOM_ROUTES: Record<string, Record<string, any>> = {
       responses: { '200': { description: 'Identity, scope, permissions, and refusals to expect' } },
     },
   },
+  '/challenges': {
+    get: {
+      summary: 'The ten published challenges, in order. Public',
+      description:
+        'Each step names the persona, the method, the path, the body where there is one, ' +
+        'and the status to expect. This is the walkthrough the demo is scored on.',
+      security: [],
+      responses: { '200': { description: 'Ten challenges, each with its steps and its point' } },
+    },
+  },
   '/keys': {
     get: {
       summary: 'The current demo key set. Public — start here',
@@ -151,6 +161,7 @@ export function llmsTxt(baseUrl: () => string): RequestHandler {
 ## Start here
 - ${base}/keys        Public. The current key set. Fetch this first.
 - ${base}/me          Who your key is, what it can reach, and what it will be REFUSED.
+- ${base}/challenges  Public. The ten challenges, with the status to expect at every step.
 - ${base}/docs.md     Full documentation. Add ?key=<your key> to see only your own routes.
 
 ## Auth
@@ -215,7 +226,18 @@ function deploymentSection(): string[] {
 
 function renderMarkdown(bundle: ReturnType<typeof generateHumanDocs>, persona?: string): string {
   const { layer0, layer1, layer2 } = bundle;
-  const out: string[] = [`# ${layer0.title}`, '', howToNarrow(persona), '', ...deploymentSection()];
+  const out: string[] = [
+    `# ${layer0.title}`,
+    '',
+    howToNarrow(persona),
+    '',
+    '## The ten challenges',
+    '',
+    '`GET /challenges` serves them as data — persona, request, body and expected status for',
+    'every step. Public, no key needed. Start there if you were told to work through the ten.',
+    '',
+    ...deploymentSection(),
+  ];
 
   // The header contract: how to authenticate — projected from
   // `auth.credential`, the same value openapi.json derives its scheme from — plus

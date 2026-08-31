@@ -1,14 +1,21 @@
 /**
  * The ten published challenges, as data.
  *
- * ONE definition, TWO consumers: `replay.ts` runs these against a live server, asserts
- * every expectation, and emits the captured transcript from the same pass. A transcript
- * generated separately from the tests is one that can disagree with them.
+ * ONE definition, THREE consumers: `scripts/replay.ts` runs these against a live server,
+ * asserts every expectation, and emits `TRANSCRIPT.md` from the same pass; `routes/
+ * challenges.ts` serves them at `GET /challenges`, so the walkthrough a visitor is told
+ * to work through is the one the harness proves.
+ *
+ * It lives here rather than in `scripts/` because it is now served: `src/routes/` still
+ * imports nothing from the harness, and `src/demo/` is where the demo's own scaffolding
+ * belongs. It is excluded from the application line count for the same reason.
  *
  * The prose lives beside the assertion for the same reason. If a challenge claims a 404
  * and the server returns 200, the run fails; the transcript cannot be published saying
  * something the API does not do.
  */
+
+import type { JsonObject } from 'pgrm';
 
 export interface Step {
   /** Persona NAME, as published by `GET /keys` — never a key. Keys rotate every two
@@ -17,7 +24,7 @@ export interface Step {
   as: string;
   method: 'GET' | 'POST';
   path: string;
-  body?: Record<string, unknown>;
+  body?: JsonObject;
   /** What the reader should notice. Rendered under the response. */
   note?: string;
   expectStatus: number;

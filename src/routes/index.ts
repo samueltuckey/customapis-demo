@@ -6,6 +6,7 @@ import { registerInvoiceRoutes } from './invoice.js';
 import { registerActivityRoutes } from './activity.js';
 import { registerKeyRoutes } from '../demo/routes/keys.js';
 import { registerEventRoutes } from '../demo/routes/events.js';
+import { registerChallengeRoutes } from '../demo/routes/challenges.js';
 
 export function registerRoutes(f: PgrmFramework): void {
   registerTimesheetRoutes(f);
@@ -15,4 +16,5 @@ export function registerRoutes(f: PgrmFramework): void {
   registerActivityRoutes(f);
   registerKeyRoutes(f);
   registerEventRoutes(f);
+  registerChallengeRoutes(f);
 }
