@@ -102,18 +102,20 @@ export function createApp(framework: PgrmFramework): express.Express {
 
   app.use(openCors());
 
+  // Per-caller responses, so a shared cache in front of the app must not hold them: the
+  // keys expire, and both doc projections vary by `?key=` and by the bearer header — a CDN
+  // keyed on the path alone was serving one visitor's permission-filtered spec to the next.
+  app.use(['/keys', '/openapi.json', '/docs.md'], (_req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store');
+    next();
+  });
+
   // Express handlers, not pgrm routes: an OpenAPI document wrapped in `{ data, meta }` is
   // not one any tool will read. Mounted before the router, which ends in its own 404.
   app.get('/health', healthCheck(framework));
   app.get('/openapi.json', openApiDoc(framework));
   app.get('/docs.md', humanDocs(framework));
   app.get('/llms.txt', llmsTxt(() => BASE_URL));
-
-  // The keys in it expire, so nothing may store this response.
-  app.use('/keys', (_req, res, next) => {
-    res.setHeader('Cache-Control', 'no-store');
-    next();
-  });
 
   // No global `express.json()` — pgrm parses per route, so it can enforce a body-size
   // limit and keep the untouched original for the audit trail.
