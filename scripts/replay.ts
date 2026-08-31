@@ -1,6 +1,7 @@
 /**
- * Replays the ten challenges against a live server, asserts every expectation, and
- * writes `TRANSCRIPT.md` from the same pass.
+ * Replays the published challenges — seven reads and the seven-step write sequence —
+ * against a live server, asserts every expectation, and writes `TRANSCRIPT.md` from the
+ * same pass.
  *
  * ONE script, TWO modes. Bare, it only asserts — that is what `npm run verify` runs, and
  * it leaves the working tree alone. With `--write` it also renders `TRANSCRIPT.md`, which
@@ -17,8 +18,10 @@
  * the public `/keys` endpoint — which also teaches the reader that the endpoint exists,
  * in the course of using it.
  *
- * **Every challenge provisions what it acts on**, so this is re-runnable — twice against
- * the same database and both pass. Reseeding is for a clean transcript, not correctness.
+ * **Nothing here re-approves a row it did not make**, so this is re-runnable — twice
+ * against the same database and both pass. The reads consume nothing and the write
+ * sequence provisions its own row at step 1. Reseeding is for a clean transcript, not
+ * correctness.
  *
  * Run: npm run replay      (assert only)
  *      npm run transcript  (assert, then rewrite TRANSCRIPT.md)
@@ -27,7 +30,14 @@
 import { writeFileSync } from 'node:fs';
 import type { Server } from 'node:http';
 import { buildFramework, createApp } from '../src/server.js';
-import { CHALLENGES, type Step } from '../src/demo/challenges.js';
+import {
+  READ_CHALLENGES,
+  WRITE_SEQUENCE_MORAL,
+  WRITE_SEQUENCE_PREMISE,
+  WRITE_SEQUENCE_TITLE,
+  writeSequence,
+  type Step,
+} from '../src/demo/challenges.js';
 import { PERSONA_DIRECTORY, keyForPersona, type PersonaName } from '../src/demo/keys.js';
 
 const BASE_URL = process.env.DEMO_BASE_URL ?? 'https://timesheetdemo.customapis.co';
@@ -44,10 +54,41 @@ const SHELL_VAR = new Map<string, string>(
 const NAME_OF = new Map<string, string>(PERSONA_DIRECTORY.map((p) => [p.persona, p.name]));
 
 interface Captured extends Step {
+  /** Write-sequence steps only: they are numbered and titled, reads are not. */
+  n?: number;
+  title?: string;
   status: number;
   responseBody: unknown;
   requestId: string | null;
 }
+
+/** A unit of replay: its own captured id, so a `{id}` can never leak between units. The
+ *  reads never mint one; the write sequence is the only unit that does. */
+interface Run {
+  key: string;
+  heading: string;
+  premise: string;
+  steps: Step[];
+  moral: string;
+}
+
+/** Called once per run, not at import: the sequence stamps today's date into step 1. */
+const runs = (): Run[] => [
+  ...READ_CHALLENGES.map((c) => ({
+    key: c.id,
+    heading: `Challenge ${c.number} — ${c.title}`,
+    premise: c.premise,
+    steps: c.steps,
+    moral: c.moral,
+  })),
+  {
+    key: 'write-sequence',
+    heading: `The write sequence — ${WRITE_SEQUENCE_TITLE}`,
+    premise: WRITE_SEQUENCE_PREMISE,
+    steps: writeSequence(),
+    moral: WRITE_SEQUENCE_MORAL,
+  },
+];
 
 const failures: string[] = [];
 
@@ -92,24 +133,25 @@ async function main(): Promise<void> {
   const origin = `http://127.0.0.1:${(server.address() as { port: number }).port}`;
 
   const captured = new Map<string, Captured[]>();
+  const plan = runs();
 
   try {
-    for (const challenge of CHALLENGES) {
+    for (const run of plan) {
       const steps: Captured[] = [];
-      // Per challenge: leaking across them would restore the ordering dependency.
+      // Per unit: leaking across them would restore the ordering dependency.
       let capturedId: string | null = null;
 
-      for (const step of challenge.steps) {
+      for (const step of run.steps) {
         const path = capturedId === null ? step.path : step.path.replace('{id}', capturedId);
         if (path.includes('{id}')) {
-          throw new Error(`challenge ${challenge.id}: ${step.path} has no captured value to fill`);
+          throw new Error(`${run.key}: ${step.path} has no captured value to fill`);
         }
 
         const res = await fetch(`${origin}${path}`, {
           method: step.method,
           headers: {
             // `public` means send no credential — the unauthenticated view is a first-class
-            // case here, not an error case (challenge 9).
+            // case here, not an error case (challenge 6).
             ...(step.as === 'public'
               ? {}
               : { authorization: `Bearer ${keyForPersona(step.as as PersonaName)}` }),
@@ -125,7 +167,7 @@ async function main(): Promise<void> {
           parsed = text;
         }
 
-        const where = `challenge ${challenge.id}: ${step.method} ${path} as ${step.as}`;
+        const where = `${run.key}: ${step.method} ${path} as ${step.as}`;
         if (res.status !== step.expectStatus) {
           failures.push(`${where} — expected ${step.expectStatus}, got ${res.status}`);
         } else if (step.expectBody) {
@@ -146,7 +188,7 @@ async function main(): Promise<void> {
         });
         process.stdout.write(res.status === step.expectStatus ? '.' : 'F');
       }
-      captured.set(challenge.id, steps);
+      captured.set(run.key, steps);
     }
   } finally {
     await new Promise((r) => server.close(r));
@@ -163,18 +205,20 @@ async function main(): Promise<void> {
   }
 
   const steps = [...captured.values()].reduce((n, s) => n + s.length, 0);
-  const summary = `${CHALLENGES.length} challenges, ${steps} requests, all asserted`;
+  const summary =
+    `${READ_CHALLENGES.length} read challenges + a ${captured.get('write-sequence')?.length}-step ` +
+    `write sequence, ${steps} requests, all asserted`;
 
   if (!WRITE) {
     console.log(`${summary}. TRANSCRIPT.md left alone — rerun with \`npm run transcript\` to rewrite it.`);
     return;
   }
 
-  writeFileSync('TRANSCRIPT.md', render(captured), 'utf8');
+  writeFileSync('TRANSCRIPT.md', render(plan, captured), 'utf8');
   console.log(`TRANSCRIPT.md written — ${summary}.`);
 }
 
-function render(captured: Map<string, Captured[]>): string {
+function render(plan: Run[], captured: Map<string, Captured[]>): string {
   const out: string[] = [];
 
   out.push('# Captured transcript');
@@ -205,13 +249,15 @@ function render(captured: Map<string, Captured[]>): string {
   }
   out.push('');
 
-  for (const challenge of CHALLENGES) {
-    out.push(`## Challenge ${challenge.id} — ${challenge.title}`);
+  for (const run of plan) {
+    out.push(`## ${run.heading}`);
     out.push('');
-    out.push(challenge.premise);
+    out.push(run.premise);
     out.push('');
-    for (const step of captured.get(challenge.id) ?? []) {
+    for (const step of captured.get(run.key) ?? []) {
       const who = NAME_OF.get(step.as) ?? 'no key at all';
+      // The write sequence numbers and titles its steps; a read challenge does not.
+      if (step.n) out.push(`### Step ${step.n} — ${step.title}`, '');
       out.push(`**${step.method} ${step.path}** — as ${who} → **${step.status}**`);
       out.push('');
       out.push('```bash');
@@ -227,7 +273,7 @@ function render(captured: Map<string, Captured[]>): string {
         out.push('');
       }
     }
-    out.push(`**What this proves.** ${challenge.moral}`);
+    out.push(`**What this proves.** ${run.moral}`);
     out.push('');
   }
 

@@ -11,7 +11,7 @@ rule; every line is an assertion about behaviour the framework produces.
 
 | File | What it is |
 |---|---|
-| `replay.ts` | Runs the ten challenges, asserts every response, and writes `TRANSCRIPT.md` from the same pass |
+| `replay.ts` | Runs the seven reads and the seven-step write sequence, asserts every response, and writes `TRANSCRIPT.md` from the same pass |
 | `guarantees.ts` | Every guarantee the demo makes, asserted against a live Postgres over real HTTP |
 | `dev-up.sh` | Local bring-up: Postgres in Docker, schema, seed |
 
@@ -32,8 +32,8 @@ every `tryThis` suggestion `/me` publishes replayed against a real response, and
 registry-level check that *every* route on `timesheets` carries the field-visibility hook —
 the one control the framework cannot derive, and so the one a future route could forget.
 
-The overlap is deliberate. A reader should be able to run the published ten and believe them
-without taking the rest on trust.
+The overlap is deliberate. A reader should be able to run the published set and believe it without
+taking the rest on trust — twice, on the same database, and get the same answers both times.
 
 ## Where the numbers come from
 

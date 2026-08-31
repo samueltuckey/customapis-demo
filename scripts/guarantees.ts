@@ -504,9 +504,19 @@ async function main(): Promise<void> {
         `createdAt order: ${JSON.stringify(times.slice(0, 4))}`,
       );
 
+      // The audit trail is tenant-scoped like every other route. This used to be a
+      // published challenge step; it left the set when the reads were cut to the seven
+      // the demo page shows, so the coverage moved here rather than disappearing.
+      const kestrelTrail = await call('GET', '/activity?entityType=timesheets', KEY.omar);
+      check(
+        "Kestrel's trail is empty — /activity is scoped like everything else",
+        kestrelTrail.status === 200 && rows(kestrelTrail.body).length === 0,
+        `got ${kestrelTrail.status} with ${rows(kestrelTrail.body).length} row(s)`,
+      );
+
       // The managers' pre-commitment — "Approve a timesheet in your own company → 404" —
-      // asserted against a real response. Sam's version is held to it by challenge 7;
-      // Tomas has no challenge step, so he is held to it here.
+      // asserted against a real response. Sam's version is held to it by write-sequence
+      // step 4; Tomas appears in no published step, so he is held to it here.
       const tomasApprove = await call('POST', '/timesheets/1041/approve', KEY.tomas, {
         auditMessage: 'Dept manager approving a row in his own company.',
       });
@@ -797,19 +807,68 @@ async function main(): Promise<void> {
         'auth header or write-scope note missing from llms.txt',
       );
       check(
-        '/llms.txt sends an agent to the ten challenges',
-        String(llms.body).includes('/challenges'),
-        'a visitor told to "work through the ten" has nowhere to find them',
+        '/llms.txt sends an agent to the challenges, and says how many of each',
+        String(llms.body).includes('/challenges') &&
+          /seven read/i.test(String(llms.body)) &&
+          /write sequence/i.test(String(llms.body)),
+        'a visitor told to "work through the challenges" has nowhere to find them',
       );
 
       const challenges = rows((await call('GET', '/challenges')).body)[0] as any;
+      const readSteps = (challenges?.reads?.challenges ?? []).flatMap((c: any) => c.steps ?? []);
+      const writeSteps = challenges?.writeSequence?.steps ?? [];
       check(
-        '/challenges publishes the ten, every step carrying the status to expect',
-        challenges?.count === 10 &&
-          challenges.challenges.every((c: any) =>
-            c.steps.every((s: any) => typeof s.expectStatus === 'number'),
-          ),
+        '/challenges publishes seven reads and a seven-step write sequence',
+        challenges?.reads?.count === 7 &&
+          challenges.reads.challenges.length === 7 &&
+          challenges?.writeSequence?.count === 7 &&
+          writeSteps.length === 7,
+        JSON.stringify({ reads: challenges?.reads?.count, writes: challenges?.writeSequence?.count }),
+      );
+      check(
+        '/challenges gives every step, read or write, the status to expect',
+        readSteps.length > 0 &&
+          [...readSteps, ...writeSteps].every((s: any) => typeof s.expectStatus === 'number'),
         JSON.stringify(challenges).slice(0, 200),
+      );
+      check(
+        '/challenges keeps the anchor ids the published copy deep-links, 3b included',
+        JSON.stringify(challenges.reads.challenges.map((c: any) => c.id)) ===
+          JSON.stringify([
+            'challenge-1',
+            'challenge-2',
+            'challenge-3',
+            'challenge-3b',
+            'challenge-4',
+            'challenge-5',
+            'challenge-6',
+          ]),
+        JSON.stringify(challenges.reads.challenges.map((c: any) => c.id)),
+      );
+      // The whole point of the rewrite: a published write challenge must not name a row
+      // somebody else already approved, so step 1 mints one and the rest thread its id.
+      check(
+        'the write sequence self-provisions — step 1 captures an id and no other step reads a fixed one',
+        writeSteps[0]?.method === 'POST' &&
+          writeSteps[0]?.path === '/timesheets' &&
+          writeSteps[0]?.capturesId === true &&
+          writeSteps
+            .slice(1)
+            .every(
+              (s: any) => s.path.includes('{id}') || s.path.startsWith('/timesheets/1041/approve'),
+            ),
+        JSON.stringify(writeSteps.map((s: any) => s.path)),
+      );
+      check(
+        '/challenges states the repeatability contract for both sets',
+        typeof challenges?.reads?.repeatable === 'string' &&
+          typeof challenges?.writeSequence?.repeatable === 'string' &&
+          /step 1/i.test(String(challenges.writeSequence.repeatable)) &&
+          /step 1/i.test(String(challenges.howToRun)),
+        JSON.stringify({
+          reads: challenges?.reads?.repeatable,
+          writes: challenges?.writeSequence?.repeatable,
+        }).slice(0, 240),
       );
 
       // Both projections vary by key, so a shared cache in front of the app would serve one
