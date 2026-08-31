@@ -472,7 +472,37 @@ async function main(): Promise<void> {
           typeof body?.scope?.writes === 'string' && body.scope.writes.length > 0,
           `scope was ${JSON.stringify(body?.scope).slice(0, 160)}`,
         );
+
+        // `tryThis` is the other half of the pre-commitment, and the half nothing held: run
+        // every suggestion the SERVER published, not the fixture behind it. The first must
+        // succeed — a list that is all refusals reads as a broken key, not as a boundary.
+        const suggestions: any[] = Array.isArray(body?.tryThis) ? body.tryThis : [];
+        check(
+          `/me as ${who} leads with a suggestion that succeeds`,
+          String(suggestions[0]?.expect).startsWith('2'),
+          `first suggestion expects ${suggestions[0]?.expect}`,
+        );
+        for (const suggestion of suggestions) {
+          const [method, path] = String(suggestion.call).split(' ');
+          const res = await call(method!, path!, key, suggestion.body);
+          // `expect` may name two outcomes ("200, or 409 …") where the sandbox is shared.
+          const promised: string[] = String(suggestion.expect).match(/\d{3}/g) ?? [];
+          check(
+            `/me as ${who} — ${suggestion.call} → ${suggestion.expect}`,
+            promised.includes(String(res.status)),
+            `got ${res.status} ${JSON.stringify(res.body).slice(0, 160)}`,
+          );
+        }
       }
+
+      // The route says "newest first", so the caller who sends no `?sort=` gets that.
+      const trail = rows((await call('GET', '/activity?entityType=timesheets', KEY.sam)).body);
+      const times = trail.map((r: any) => String(r.createdAt));
+      check(
+        'GET /activity defaults to newest first, which is what its description promises',
+        times.length > 1 && times.every((t, i) => i === 0 || times[i - 1]! >= t),
+        `createdAt order: ${JSON.stringify(times.slice(0, 4))}`,
+      );
 
       // The managers' pre-commitment — "Approve a timesheet in your own company → 404" —
       // asserted against a real response. Sam's version is held to it by challenge 7;
@@ -766,6 +796,32 @@ async function main(): Promise<void> {
           String(llms.body).includes('Scratch Sandbox'),
         'auth header or write-scope note missing from llms.txt',
       );
+      check(
+        '/llms.txt sends an agent to the ten challenges',
+        String(llms.body).includes('/challenges'),
+        'a visitor told to "work through the ten" has nowhere to find them',
+      );
+
+      const challenges = rows((await call('GET', '/challenges')).body)[0] as any;
+      check(
+        '/challenges publishes the ten, every step carrying the status to expect',
+        challenges?.count === 10 &&
+          challenges.challenges.every((c: any) =>
+            c.steps.every((s: any) => typeof s.expectStatus === 'number'),
+          ),
+        JSON.stringify(challenges).slice(0, 200),
+      );
+
+      // Both projections vary by key, so a shared cache in front of the app would serve one
+      // visitor's filtered spec to the next — which is what a CDN keyed on the path did.
+      for (const path of ['/openapi.json', '/docs.md']) {
+        const res = await fetch(`${base}${path}`);
+        check(
+          `${path} forbids storage — its body depends on who asked`,
+          res.headers.get('cache-control') === 'no-store',
+          `cache-control: ${res.headers.get('cache-control') ?? '(absent)'}`,
+        );
+      }
     }
 
     console.log('\n6. Refusals carry a requestId and disclose nothing');
