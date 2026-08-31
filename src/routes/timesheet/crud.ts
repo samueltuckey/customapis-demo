@@ -53,7 +53,8 @@ export function registerTimesheetCrudRoutes(f: PgrmFramework): void {
     // ── Optional — every line below is a CHOICE, not a requirement ─────────────────
     description:
       'Submit a timesheet. The `employeeId` must be in your write scope — the Scratch ' +
-      `Sandbox here — or you get a 404. ${COST_RATE_NOTE}`,
+      'Sandbox here — or you get a 404; `GET /me` names one your key can use. ' +
+      `${COST_RATE_NOTE}`,
     // No `defaultFieldValues` for `status`, deliberately: the column has a database
     // default, so the write schema makes it optional and the DATABASE supplies 'draft'.
     // Declaring it here would send a value on every INSERT, the DB default would never

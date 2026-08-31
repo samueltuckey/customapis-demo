@@ -51,6 +51,7 @@ curl -sS -H "Authorization: Bearer $DEMO_EMPLOYEE" \
         3
       ],
       "writes": "your writes land only in the shared Scratch Sandbox (company 3); the curated companies are read-only, so a write there is a 404",
+      "writeEmployeeId": 81,
       "departments": "all departments in your companies",
       "rows": "owner-scoped: you see only timesheets you own"
     },
@@ -84,10 +85,7 @@ curl -sS -H "Authorization: Bearer $DEMO_EMPLOYEE" \
       {
         "plain": "See a colleague's timesheet",
         "why": "owner scope",
-        "expect": 404
-      },
-      {
-    
+        "expec
   … truncated for the page
 ```
 
@@ -121,6 +119,7 @@ curl -sS -H "Authorization: Bearer $DEMO_DEPARTMENT_MANAGER" \
         3
       ],
       "writes": "your writes land only in the shared Scratch Sandbox (company 3); the curated companies are read-only, so a write there is a 404",
+      "writeEmployeeId": 81,
       "departments": [
         "8"
       ],
@@ -153,10 +152,7 @@ curl -sS -H "Authorization: Bearer $DEMO_DEPARTMENT_MANAGER" \
       },
       {
         "permission": "customapis_search_timesheets",
-        "plain": "List timesheets"
-      },
-      {
-  
+        "plain": "List ti
   … truncated for the page
 ```
 
@@ -191,10 +187,10 @@ curl -sS -H "Authorization: Bearer $DEMO_EMPLOYEE" \
       "ownerDisplayName": "Alice Nguyen",
       "createdById": null,
       "createdByDisplayName": "System",
-      "createdAt": "2026-08-30T08:29:19.719Z",
+      "createdAt": "2026-08-31T03:26:33.828Z",
       "lastUpdatedById": null,
       "lastUpdatedByDisplayName": "System",
-      "lastUpdatedAt": "2026-08-30T08:29:19.719Z",
+      "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
       "tenantId": 1
     },
     {
@@ -210,15 +206,15 @@ curl -sS -H "Authorization: Bearer $DEMO_EMPLOYEE" \
       "ownerDisplayName": "Alice Nguyen",
       "createdById": null,
       "createdByDisplayName": "System",
-      "createdAt": "2026-08-30T08:29:19.719Z",
+      "createdAt": "2026-08-31T03:26:33.828Z",
       "lastUpdatedById": null,
       "lastUpdatedByDisplayName": "System",
-      "lastUpdatedAt": "2026-08-30T08:29:19.719Z",
+      "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
       "tenantId": 3
     }
   ],
   "meta": {
-    "requestId": "53eabb91-8961-4e2d-b51e-740e4c4c9f59",
+    "requestId": "ae79caa2-ce81-4a53-b3be-0efb1cb458b4",
     "page": {
       "limit": 25,
       "offset": 0
@@ -252,10 +248,10 @@ curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
       "ownerDisplayName": "Alice Nguyen",
       "createdById": null,
       "createdByDisplayName": "System",
-      "createdAt": "2026-08-30T08:29:19.719Z",
+      "createdAt": "2026-08-31T03:26:33.828Z",
       "lastUpdatedById": null,
       "lastUpdatedByDisplayName": "System",
-      "lastUpdatedAt": "2026-08-30T08:29:19.719Z",
+      "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
       "tenantId": 1
     },
     {
@@ -271,10 +267,10 @@ curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
       "ownerDisplayName": "Ben Carter",
       "createdById": null,
       "createdByDisplayName": "System",
-      "createdAt": "2026-08-30T08:29:19.719Z",
+      "createdAt": "2026-08-31T03:26:33.828Z",
       "lastUpdatedById": null,
       "lastUpdatedByDisplayName": "System",
-      "lastUpdatedAt": "2026-08-30T08:29:19.719Z",
+      "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
       "tenantId": 1
     },
     {
@@ -315,10 +311,10 @@ curl -sS -H "Authorization: Bearer $DEMO_PAYROLL" \
       "ownerDisplayName": "Alice Nguyen",
       "createdById": null,
       "createdByDisplayName": "System",
-      "createdAt": "2026-08-30T08:29:19.719Z",
+      "createdAt": "2026-08-31T03:26:33.828Z",
       "lastUpdatedById": null,
       "lastUpdatedByDisplayName": "System",
-      "lastUpdatedAt": "2026-08-30T08:29:19.719Z",
+      "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
       "tenantId": 1
     },
     {
@@ -335,10 +331,10 @@ curl -sS -H "Authorization: Bearer $DEMO_PAYROLL" \
       "ownerDisplayName": "Ben Carter",
       "createdById": null,
       "createdByDisplayName": "System",
-      "createdAt": "2026-08-30T08:29:19.719Z",
+      "createdAt": "2026-08-31T03:26:33.828Z",
       "lastUpdatedById": null,
       "lastUpdatedByDisplayName": "System",
-      "lastUpdatedAt": "2026-08-30T08:29:19.719Z",
+      "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
       "tenantId": 1
     },
     {
@@ -371,7 +367,7 @@ curl -sS -H "Authorization: Bearer $DEMO_EMPLOYEE" \
   "error": {
     "code": "not_found",
     "message": "Not found.",
-    "requestId": "16a76a0e-31d1-492b-892e-aef0a2812b8b"
+    "requestId": "32088d71-e17f-42cf-90be-b363e7e1d82c"
   }
 }
 ```
@@ -400,14 +396,14 @@ curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
     "ownerDisplayName": "Ben Carter",
     "createdById": null,
     "createdByDisplayName": "System",
-    "createdAt": "2026-08-30T08:29:19.719Z",
+    "createdAt": "2026-08-31T03:26:33.828Z",
     "lastUpdatedById": null,
     "lastUpdatedByDisplayName": "System",
-    "lastUpdatedAt": "2026-08-30T08:29:19.719Z",
+    "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
     "tenantId": 1
   },
   "meta": {
-    "requestId": "a13bebbd-a603-41bc-8f46-aa1a6ba23de1"
+    "requestId": "f47f7089-4072-42e1-a07b-35cacd1e22a5"
   }
 }
 ```
@@ -442,14 +438,14 @@ curl -sS -H "Authorization: Bearer $DEMO_DEPARTMENT_MANAGER" \
     "ownerDisplayName": "Alice Nguyen",
     "createdById": null,
     "createdByDisplayName": "System",
-    "createdAt": "2026-08-30T08:29:19.719Z",
+    "createdAt": "2026-08-31T03:26:33.828Z",
     "lastUpdatedById": null,
     "lastUpdatedByDisplayName": "System",
-    "lastUpdatedAt": "2026-08-30T08:29:19.719Z",
+    "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
     "tenantId": 1
   },
   "meta": {
-    "requestId": "c8c15775-7fb5-4496-913e-f9433aca7930"
+    "requestId": "e7e9fc86-1683-4603-b6df-81ff9ec01bc4"
   }
 }
 ```
@@ -468,7 +464,7 @@ curl -sS -H "Authorization: Bearer $DEMO_DEPARTMENT_MANAGER" \
   "error": {
     "code": "not_found",
     "message": "Not found.",
-    "requestId": "4cf4f795-768c-465e-8ebd-9a80613d840e"
+    "requestId": "40d88221-1db2-4891-a427-801e92e1b18c"
   }
 }
 ```
@@ -497,14 +493,14 @@ curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
     "ownerDisplayName": "Nadia Rahman",
     "createdById": null,
     "createdByDisplayName": "System",
-    "createdAt": "2026-08-30T08:29:19.719Z",
+    "createdAt": "2026-08-31T03:26:33.828Z",
     "lastUpdatedById": null,
     "lastUpdatedByDisplayName": "System",
-    "lastUpdatedAt": "2026-08-30T08:29:19.719Z",
+    "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
     "tenantId": 1
   },
   "meta": {
-    "requestId": "e3eeb285-505a-4196-9f7c-25ef2c4ce9ba"
+    "requestId": "723dbfb0-2d1c-48fd-92b0-73195047fb4c"
   }
 }
 ```
@@ -540,14 +536,14 @@ curl -sS -H "Authorization: Bearer $DEMO_PAYROLL" \
     "ownerDisplayName": "Alice Nguyen",
     "createdById": null,
     "createdByDisplayName": "System",
-    "createdAt": "2026-08-30T08:29:19.719Z",
+    "createdAt": "2026-08-31T03:26:33.828Z",
     "lastUpdatedById": null,
     "lastUpdatedByDisplayName": "System",
-    "lastUpdatedAt": "2026-08-30T08:29:19.719Z",
+    "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
     "tenantId": 1
   },
   "meta": {
-    "requestId": "5ff4bb9b-998c-4e30-bbc8-4cadab9199ec"
+    "requestId": "13ef8771-fa4b-4333-914c-69bf5fe9679c"
   }
 }
 ```
@@ -576,14 +572,14 @@ curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
     "ownerDisplayName": "Alice Nguyen",
     "createdById": null,
     "createdByDisplayName": "System",
-    "createdAt": "2026-08-30T08:29:19.719Z",
+    "createdAt": "2026-08-31T03:26:33.828Z",
     "lastUpdatedById": null,
     "lastUpdatedByDisplayName": "System",
-    "lastUpdatedAt": "2026-08-30T08:29:19.719Z",
+    "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
     "tenantId": 1
   },
   "meta": {
-    "requestId": "493109b4-b577-4c34-b81a-44d3853849fa"
+    "requestId": "45152073-8ca3-4651-8c41-53035dc613d8"
   }
 }
 ```
@@ -619,14 +615,14 @@ curl -sS -H "Authorization: Bearer $DEMO_PAYROLL" \
     "ownerDisplayName": "Alice Nguyen",
     "createdById": null,
     "createdByDisplayName": "System",
-    "createdAt": "2026-08-30T08:29:19.719Z",
+    "createdAt": "2026-08-31T03:26:33.828Z",
     "lastUpdatedById": null,
     "lastUpdatedByDisplayName": "System",
-    "lastUpdatedAt": "2026-08-30T08:29:19.719Z",
+    "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
     "tenantId": 1
   },
   "meta": {
-    "requestId": "7ca9d3e6-e38b-47a6-9529-f6f7836a7a14"
+    "requestId": "5645d806-c346-419a-b379-e87c93fcf660"
   }
 }
 ```
@@ -645,7 +641,7 @@ curl -sS -H "Authorization: Bearer $DEMO_KESTREL_PAYROLL" \
   "error": {
     "code": "not_found",
     "message": "Not found.",
-    "requestId": "6abb8f25-307c-4d3d-9f1e-75cdfa0b5001"
+    "requestId": "aed5f3f9-590a-4c0a-a181-69a02e59838a"
   }
 }
 ```
@@ -675,14 +671,14 @@ curl -sS -H "Authorization: Bearer $DEMO_KESTREL_PAYROLL" \
     "ownerDisplayName": "System",
     "createdById": null,
     "createdByDisplayName": "System",
-    "createdAt": "2026-08-30T08:29:19.719Z",
+    "createdAt": "2026-08-31T03:26:33.828Z",
     "lastUpdatedById": null,
     "lastUpdatedByDisplayName": "System",
-    "lastUpdatedAt": "2026-08-30T08:29:19.719Z",
+    "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
     "tenantId": 2
   },
   "meta": {
-    "requestId": "a884baa3-4fb7-42f2-b05e-c24098b1fb86"
+    "requestId": "a760a9d6-3176-4221-bbe5-037ae2d3f525"
   }
 }
 ```
@@ -710,7 +706,7 @@ curl -sS -H "Authorization: Bearer $DEMO_EMPLOYEE" \
   "error": {
     "code": "permission_denied",
     "message": "Permission denied for this operation.",
-    "requestId": "ba13e9ce-b8b0-4516-afd1-51d81c8586d6"
+    "requestId": "14449b12-db9f-4582-9af1-530301798f0d"
   }
 }
 ```
@@ -729,7 +725,7 @@ curl -sS -H "Authorization: Bearer $DEMO_EMPLOYEE" \
   "error": {
     "code": "not_found",
     "message": "Not found.",
-    "requestId": "3ebd3524-cba9-46af-84f7-dfd151e028ff"
+    "requestId": "fb4a3950-9f2b-43e5-a77a-093160af967c"
   }
 }
 ```
@@ -765,16 +761,16 @@ curl -sS -H "Authorization: Bearer $DEMO_EMPLOYEE" \
     "note": "Shift I am about to have approved",
     "createdById": 41,
     "createdByDisplayName": "Alice Nguyen",
-    "createdAt": "2026-08-30T08:29:20.853Z",
+    "createdAt": "2026-08-31T03:26:44.691Z",
     "lastUpdatedById": 41,
     "lastUpdatedByDisplayName": "Alice Nguyen",
-    "lastUpdatedAt": "2026-08-30T08:29:20.853Z",
+    "lastUpdatedAt": "2026-08-31T03:26:44.691Z",
     "ownerId": 41,
     "ownerDisplayName": "Alice Nguyen",
     "tenantId": 3
   },
   "meta": {
-    "requestId": "74a7dbba-ad98-4d26-8abc-d41d44f89ed3"
+    "requestId": "4d1de9b5-d4d2-4ad8-821e-d7548eb024f3"
   }
 }
 ```
@@ -796,7 +792,7 @@ curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
   "error": {
     "code": "audit_message_required",
     "message": "A \"auditMessage\" is required for this operation.",
-    "requestId": "aa97643e-0aef-4a72-97ac-74859b2e9115"
+    "requestId": "60ba24fd-beeb-4dba-8092-9f1278729e8c"
   }
 }
 ```
@@ -818,7 +814,7 @@ curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
   "error": {
     "code": "not_found",
     "message": "Not found.",
-    "requestId": "cf5da40b-c3f8-4fe0-b355-f93ace0c270a"
+    "requestId": "b0743be3-faa6-45f2-81bf-9accb0f7b711"
   }
 }
 ```
@@ -850,14 +846,14 @@ curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
     "ownerDisplayName": "Alice Nguyen",
     "createdById": 41,
     "createdByDisplayName": "Alice Nguyen",
-    "createdAt": "2026-08-30T08:29:20.853Z",
+    "createdAt": "2026-08-31T03:26:44.691Z",
     "lastUpdatedById": 42,
     "lastUpdatedByDisplayName": "Sam Okafor",
-    "lastUpdatedAt": "2026-08-30T08:29:20.875Z",
+    "lastUpdatedAt": "2026-08-31T03:26:45.086Z",
     "tenantId": 3
   },
   "meta": {
-    "requestId": "b8010819-08f1-4d69-a582-41919ec1984e"
+    "requestId": "158ba3f2-9f47-4647-9b87-eebeca42765b"
   }
 }
 ```
@@ -879,7 +875,7 @@ curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
   "error": {
     "code": "conflict",
     "message": "This timesheet has already been approved.",
-    "requestId": "6b75d4a5-3c2a-4dbe-82dc-2925aeb8ab66"
+    "requestId": "c037eea3-0a84-4fe8-b948-de786f540997"
   }
 }
 ```
@@ -917,8 +913,8 @@ curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
           "from": "submitted"
         },
         "lastUpdatedAt": {
-          "to": "2026-08-30T08:29:20.875Z",
-          "from": "2026-08-30T08:29:20.853Z"
+          "to": "2026-08-31T03:26:45.086Z",
+          "from": "2026-08-31T03:26:44.691Z"
         },
         "lastUpdatedById": {
           "to": 42,
@@ -931,14 +927,14 @@ curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
       },
       "systemMessage": "update timesheets",
       "userMessage": "Checked against the roster; hours match the shift.",
-      "correlationId": "b8010819-08f1-4d69-a582-41919ec1984e",
+      "correlationId": "158ba3f2-9f47-4647-9b87-eebeca42765b",
       "userAgentRequestId": null,
       "context": {},
-      "createdAt": "2026-08-30T08:29:20.873Z"
+      "createdAt": "2026-08-31T03:26:45.069Z"
     }
   ],
   "meta": {
-    "requestId": "28154852-b032-4fc7-9d92-fbe00b5729f9",
+    "requestId": "1a375864-c371-49ed-8ac1-72c55095b0b1",
     "page": {
       "limit": 25,
       "offset": 0
@@ -960,7 +956,7 @@ curl -sS -H "Authorization: Bearer $DEMO_KESTREL_PAYROLL" \
 {
   "data": [],
   "meta": {
-    "requestId": "c484c0b2-d467-49bb-898c-c04721d115e8",
+    "requestId": "bafc9783-b0ba-4a87-bbb7-8ab842a49149",
     "page": {
       "limit": 25,
       "offset": 0
