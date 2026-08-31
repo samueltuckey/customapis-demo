@@ -160,7 +160,7 @@ curl -sS -H "Authorization: Bearer $DEMO_DEPARTMENT_MANAGER" \
 
 **What this proves.** The server publishes its own limits. An agent reads `cannot` to know what to attempt, which is how this demo generates refusals instead of role-play.
 
-## Challenge 2 — Same request, different answers
+## Challenge 2 — Same search request, different results for each user's access
 
 One unchanged request — `GET /timesheets` — sent by three keys in the same company.
 
@@ -187,10 +187,10 @@ curl -sS -H "Authorization: Bearer $DEMO_EMPLOYEE" \
       "ownerDisplayName": "Alice Nguyen",
       "createdById": null,
       "createdByDisplayName": "System",
-      "createdAt": "2026-08-31T03:26:33.828Z",
+      "createdAt": "2026-08-31T04:51:04.143Z",
       "lastUpdatedById": null,
       "lastUpdatedByDisplayName": "System",
-      "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
+      "lastUpdatedAt": "2026-08-31T04:51:04.143Z",
       "tenantId": 1
     },
     {
@@ -206,15 +206,15 @@ curl -sS -H "Authorization: Bearer $DEMO_EMPLOYEE" \
       "ownerDisplayName": "Alice Nguyen",
       "createdById": null,
       "createdByDisplayName": "System",
-      "createdAt": "2026-08-31T03:26:33.828Z",
+      "createdAt": "2026-08-31T04:51:04.143Z",
       "lastUpdatedById": null,
       "lastUpdatedByDisplayName": "System",
-      "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
+      "lastUpdatedAt": "2026-08-31T04:51:04.143Z",
       "tenantId": 3
     }
   ],
   "meta": {
-    "requestId": "ae79caa2-ce81-4a53-b3be-0efb1cb458b4",
+    "requestId": "05cc5743-0c51-4716-a789-0c2fa23dae72",
     "page": {
       "limit": 25,
       "offset": 0
@@ -248,10 +248,10 @@ curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
       "ownerDisplayName": "Alice Nguyen",
       "createdById": null,
       "createdByDisplayName": "System",
-      "createdAt": "2026-08-31T03:26:33.828Z",
+      "createdAt": "2026-08-31T04:51:04.143Z",
       "lastUpdatedById": null,
       "lastUpdatedByDisplayName": "System",
-      "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
+      "lastUpdatedAt": "2026-08-31T04:51:04.143Z",
       "tenantId": 1
     },
     {
@@ -267,10 +267,10 @@ curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
       "ownerDisplayName": "Ben Carter",
       "createdById": null,
       "createdByDisplayName": "System",
-      "createdAt": "2026-08-31T03:26:33.828Z",
+      "createdAt": "2026-08-31T04:51:04.143Z",
       "lastUpdatedById": null,
       "lastUpdatedByDisplayName": "System",
-      "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
+      "lastUpdatedAt": "2026-08-31T04:51:04.143Z",
       "tenantId": 1
     },
     {
@@ -311,10 +311,10 @@ curl -sS -H "Authorization: Bearer $DEMO_PAYROLL" \
       "ownerDisplayName": "Alice Nguyen",
       "createdById": null,
       "createdByDisplayName": "System",
-      "createdAt": "2026-08-31T03:26:33.828Z",
+      "createdAt": "2026-08-31T04:51:04.143Z",
       "lastUpdatedById": null,
       "lastUpdatedByDisplayName": "System",
-      "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
+      "lastUpdatedAt": "2026-08-31T04:51:04.143Z",
       "tenantId": 1
     },
     {
@@ -331,10 +331,10 @@ curl -sS -H "Authorization: Bearer $DEMO_PAYROLL" \
       "ownerDisplayName": "Ben Carter",
       "createdById": null,
       "createdByDisplayName": "System",
-      "createdAt": "2026-08-31T03:26:33.828Z",
+      "createdAt": "2026-08-31T04:51:04.143Z",
       "lastUpdatedById": null,
       "lastUpdatedByDisplayName": "System",
-      "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
+      "lastUpdatedAt": "2026-08-31T04:51:04.143Z",
       "tenantId": 1
     },
     {
@@ -349,7 +349,7 @@ curl -sS -H "Authorization: Bearer $DEMO_PAYROLL" \
 
 > Payroll: the same rows as Sam, plus `costRate`.
 
-**What this proves.** Alice and Sam differ by exactly one permission — `customapis_admin_timesheets`. Neither the route nor the query changed, and no filtering code exists in the application.
+**What this proves.** On this endpoint the whole difference is one permission: `customapis_admin_timesheets` is what turns "your timesheets" into everyone's. Sam holds one other that Alice does not — `customapis_update_timesheets` — and it only matters when he approves something. Neither the route nor the query changed, and no filtering code exists in the application.
 
 ## Challenge 3 — Reach your colleague's row
 
@@ -367,7 +367,7 @@ curl -sS -H "Authorization: Bearer $DEMO_EMPLOYEE" \
   "error": {
     "code": "not_found",
     "message": "Not found.",
-    "requestId": "32088d71-e17f-42cf-90be-b363e7e1d82c"
+    "requestId": "38eb2593-ee1d-4aa0-966e-ed02ca855600"
   }
 }
 ```
@@ -396,14 +396,14 @@ curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
     "ownerDisplayName": "Ben Carter",
     "createdById": null,
     "createdByDisplayName": "System",
-    "createdAt": "2026-08-31T03:26:33.828Z",
+    "createdAt": "2026-08-31T04:51:04.143Z",
     "lastUpdatedById": null,
     "lastUpdatedByDisplayName": "System",
-    "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
+    "lastUpdatedAt": "2026-08-31T04:51:04.143Z",
     "tenantId": 1
   },
   "meta": {
-    "requestId": "f47f7089-4072-42e1-a07b-35cacd1e22a5"
+    "requestId": "f6383e57-939b-4398-ae37-795c6cdbfae4"
   }
 }
 ```
@@ -414,7 +414,7 @@ curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
 
 ## Challenge 3b — Reach the next department
 
-Tomas manages Front of House. The Kitchen is a sibling department — same company, same location, one step across.
+Tomas manages Front of House. The Kitchen is a sibling department — same company, same location, one step across. (Numbered `3b` because it was added after the others: the anchors are deep-linked from published copy, and renumbering would silently break them.)
 
 **GET /timesheets/1041** — as Tomas Ferreira → **200**
 
@@ -438,14 +438,14 @@ curl -sS -H "Authorization: Bearer $DEMO_DEPARTMENT_MANAGER" \
     "ownerDisplayName": "Alice Nguyen",
     "createdById": null,
     "createdByDisplayName": "System",
-    "createdAt": "2026-08-31T03:26:33.828Z",
+    "createdAt": "2026-08-31T04:51:04.143Z",
     "lastUpdatedById": null,
     "lastUpdatedByDisplayName": "System",
-    "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
+    "lastUpdatedAt": "2026-08-31T04:51:04.143Z",
     "tenantId": 1
   },
   "meta": {
-    "requestId": "e7e9fc86-1683-4603-b6df-81ff9ec01bc4"
+    "requestId": "6d040a8f-7041-4497-9225-4614c60e3197"
   }
 }
 ```
@@ -464,7 +464,7 @@ curl -sS -H "Authorization: Bearer $DEMO_DEPARTMENT_MANAGER" \
   "error": {
     "code": "not_found",
     "message": "Not found.",
-    "requestId": "40d88221-1db2-4891-a427-801e92e1b18c"
+    "requestId": "2f6061b6-23ca-4011-b1c3-5f878dacc831"
   }
 }
 ```
@@ -493,14 +493,14 @@ curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
     "ownerDisplayName": "Nadia Rahman",
     "createdById": null,
     "createdByDisplayName": "System",
-    "createdAt": "2026-08-31T03:26:33.828Z",
+    "createdAt": "2026-08-31T04:51:04.143Z",
     "lastUpdatedById": null,
     "lastUpdatedByDisplayName": "System",
-    "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
+    "lastUpdatedAt": "2026-08-31T04:51:04.143Z",
     "tenantId": 1
   },
   "meta": {
-    "requestId": "723dbfb0-2d1c-48fd-92b0-73195047fb4c"
+    "requestId": "c71b794c-7e72-4638-8763-811cc3984558"
   }
 }
 ```
@@ -536,14 +536,14 @@ curl -sS -H "Authorization: Bearer $DEMO_PAYROLL" \
     "ownerDisplayName": "Alice Nguyen",
     "createdById": null,
     "createdByDisplayName": "System",
-    "createdAt": "2026-08-31T03:26:33.828Z",
+    "createdAt": "2026-08-31T04:51:04.143Z",
     "lastUpdatedById": null,
     "lastUpdatedByDisplayName": "System",
-    "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
+    "lastUpdatedAt": "2026-08-31T04:51:04.143Z",
     "tenantId": 1
   },
   "meta": {
-    "requestId": "13ef8771-fa4b-4333-914c-69bf5fe9679c"
+    "requestId": "0a1f5d2a-ba60-4995-ac04-70a01e165750"
   }
 }
 ```
@@ -572,14 +572,14 @@ curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
     "ownerDisplayName": "Alice Nguyen",
     "createdById": null,
     "createdByDisplayName": "System",
-    "createdAt": "2026-08-31T03:26:33.828Z",
+    "createdAt": "2026-08-31T04:51:04.143Z",
     "lastUpdatedById": null,
     "lastUpdatedByDisplayName": "System",
-    "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
+    "lastUpdatedAt": "2026-08-31T04:51:04.143Z",
     "tenantId": 1
   },
   "meta": {
-    "requestId": "45152073-8ca3-4651-8c41-53035dc613d8"
+    "requestId": "e157d3bf-edc6-44b1-a7a7-c1bfaa63daa1"
   }
 }
 ```
@@ -615,14 +615,14 @@ curl -sS -H "Authorization: Bearer $DEMO_PAYROLL" \
     "ownerDisplayName": "Alice Nguyen",
     "createdById": null,
     "createdByDisplayName": "System",
-    "createdAt": "2026-08-31T03:26:33.828Z",
+    "createdAt": "2026-08-31T04:51:04.143Z",
     "lastUpdatedById": null,
     "lastUpdatedByDisplayName": "System",
-    "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
+    "lastUpdatedAt": "2026-08-31T04:51:04.143Z",
     "tenantId": 1
   },
   "meta": {
-    "requestId": "5645d806-c346-419a-b379-e87c93fcf660"
+    "requestId": "1d34b14d-0765-4ef3-8001-056cddd26408"
   }
 }
 ```
@@ -641,7 +641,7 @@ curl -sS -H "Authorization: Bearer $DEMO_KESTREL_PAYROLL" \
   "error": {
     "code": "not_found",
     "message": "Not found.",
-    "requestId": "aed5f3f9-590a-4c0a-a181-69a02e59838a"
+    "requestId": "77c656ff-9acf-432f-9bd1-621ec47e628b"
   }
 }
 ```
@@ -671,14 +671,14 @@ curl -sS -H "Authorization: Bearer $DEMO_KESTREL_PAYROLL" \
     "ownerDisplayName": "System",
     "createdById": null,
     "createdByDisplayName": "System",
-    "createdAt": "2026-08-31T03:26:33.828Z",
+    "createdAt": "2026-08-31T04:51:04.143Z",
     "lastUpdatedById": null,
     "lastUpdatedByDisplayName": "System",
-    "lastUpdatedAt": "2026-08-31T03:26:33.828Z",
+    "lastUpdatedAt": "2026-08-31T04:51:04.143Z",
     "tenantId": 2
   },
   "meta": {
-    "requestId": "a760a9d6-3176-4221-bbe5-037ae2d3f525"
+    "requestId": "c1d11490-6d91-4b81-95f9-0d65930e5307"
   }
 }
 ```
@@ -687,289 +687,7 @@ curl -sS -H "Authorization: Bearer $DEMO_KESTREL_PAYROLL" \
 
 **What this proves.** The id is valid and the row exists. You cannot tell either of those things from the response — and a timesheet reaches its company through four derived joins, not a tenant column.
 
-## Challenge 6 — 403 vs 404 — the security model, in two responses
-
-One key, two refusals, two different codes.
-
-**POST /timesheets/1046/approve** — as Alice Nguyen → **403**
-
-```bash
-curl -sS -H "Authorization: Bearer $DEMO_EMPLOYEE" \
-  -H "Content-Type: application/json" \
-  -d '{"auditMessage":"looks fine to me"}' \
-  -X POST \
-  "https://timesheetdemo.customapis.co/timesheets/1046/approve"
-```
-
-```json
-{
-  "error": {
-    "code": "permission_denied",
-    "message": "Permission denied for this operation.",
-    "requestId": "14449b12-db9f-4582-9af1-530301798f0d"
-  }
-}
-```
-
-> Alice holds no approve permission at all — decided from one check, before any row is loaded.
-
-**GET /timesheets/1042** — as Alice Nguyen → **404**
-
-```bash
-curl -sS -H "Authorization: Bearer $DEMO_EMPLOYEE" \
-  "https://timesheetdemo.customapis.co/timesheets/1042"
-```
-
-```json
-{
-  "error": {
-    "code": "not_found",
-    "message": "Not found.",
-    "requestId": "fb4a3950-9f2b-43e5-a77a-093160af967c"
-  }
-}
-```
-
-> Alice holds read permission. This row is not hers.
-
-**What this proves.** **403 means the permission is missing. 404 means everything else** — not yours, not your department, not your company, never existed. All four are the same response, so the boundary cannot be mapped by probing it.
-
-## Challenge 7 — Do the write you should
-
-Approval is a real write: in a transaction, on a locked row, audited on commit, and it demands a written reason. **You make the row it acts on**, so nothing here depends on what another visitor did first.
-
-**POST /timesheets** — as Alice Nguyen → **201**
-
-```bash
-curl -sS -H "Authorization: Bearer $DEMO_EMPLOYEE" \
-  -H "Content-Type: application/json" \
-  -d '{"employeeId":81,"workDate":"2026-08-12","startAt":"2026-08-12T07:00:00Z","endAt":"2026-08-12T15:00:00Z","hours":8,"status":"submitted","note":"Shift I am about to have approved"}' \
-  -X POST \
-  "https://timesheetdemo.customapis.co/timesheets"
-```
-
-```json
-{
-  "data": {
-    "id": 5001,
-    "employeeId": 81,
-    "workDate": "2026-08-12",
-    "startAt": "2026-08-12T07:00:00.000Z",
-    "endAt": "2026-08-12T15:00:00.000Z",
-    "hours": "8.00",
-    "status": "submitted",
-    "note": "Shift I am about to have approved",
-    "createdById": 41,
-    "createdByDisplayName": "Alice Nguyen",
-    "createdAt": "2026-08-31T03:26:44.691Z",
-    "lastUpdatedById": 41,
-    "lastUpdatedByDisplayName": "Alice Nguyen",
-    "lastUpdatedAt": "2026-08-31T03:26:44.691Z",
-    "ownerId": 41,
-    "ownerDisplayName": "Alice Nguyen",
-    "tenantId": 3
-  },
-  "meta": {
-    "requestId": "4d1de9b5-d4d2-4ad8-821e-d7548eb024f3"
-  }
-}
-```
-
-> Your own row, in the Scratch Sandbox — the only company any key can write to. `ownerId` is stamped from the caller, so it belongs to Alice.
-
-**POST /timesheets/5001/approve** — as Sam Okafor → **400**
-
-```bash
-curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
-  -H "Content-Type: application/json" \
-  -d '{}' \
-  -X POST \
-  "https://timesheetdemo.customapis.co/timesheets/5001/approve"
-```
-
-```json
-{
-  "error": {
-    "code": "audit_message_required",
-    "message": "A \"auditMessage\" is required for this operation.",
-    "requestId": "60ba24fd-beeb-4dba-8092-9f1278729e8c"
-  }
-}
-```
-
-> No reason supplied. One line of route config makes this impossible to skip.
-
-**POST /timesheets/1041/approve** — as Sam Okafor → **404**
-
-```bash
-curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
-  -H "Content-Type: application/json" \
-  -d '{"auditMessage":"Approving a Harbourline row."}' \
-  -X POST \
-  "https://timesheetdemo.customapis.co/timesheets/1041/approve"
-```
-
-```json
-{
-  "error": {
-    "code": "not_found",
-    "message": "Not found.",
-    "requestId": "b0743be3-faa6-45f2-81bf-9accb0f7b711"
-  }
-}
-```
-
-> Companies A and B are read-only — by permission, not convention. Note the 404: you are not told that writes are disallowed here.
-
-**POST /timesheets/5001/approve** — as Sam Okafor → **200**
-
-```bash
-curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
-  -H "Content-Type: application/json" \
-  -d '{"auditMessage":"Checked against the roster; hours match the shift."}' \
-  -X POST \
-  "https://timesheetdemo.customapis.co/timesheets/5001/approve"
-```
-
-```json
-{
-  "data": {
-    "id": 5001,
-    "employeeId": 81,
-    "workDate": "2026-08-12",
-    "startAt": "2026-08-12T07:00:00.000Z",
-    "endAt": "2026-08-12T15:00:00.000Z",
-    "hours": "8.00",
-    "status": "approved",
-    "note": "Shift I am about to have approved",
-    "ownerId": 41,
-    "ownerDisplayName": "Alice Nguyen",
-    "createdById": 41,
-    "createdByDisplayName": "Alice Nguyen",
-    "createdAt": "2026-08-31T03:26:44.691Z",
-    "lastUpdatedById": 42,
-    "lastUpdatedByDisplayName": "Sam Okafor",
-    "lastUpdatedAt": "2026-08-31T03:26:45.086Z",
-    "tenantId": 3
-  },
-  "meta": {
-    "requestId": "158ba3f2-9f47-4647-9b87-eebeca42765b"
-  }
-}
-```
-
-> Your row, with a reason. He does not own it — Alice does — so this reaches it only through his owner exemption. The reason is now in the trail forever.
-
-**POST /timesheets/5001/approve** — as Sam Okafor → **409**
-
-```bash
-curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
-  -H "Content-Type: application/json" \
-  -d '{"auditMessage":"And again."}' \
-  -X POST \
-  "https://timesheetdemo.customapis.co/timesheets/5001/approve"
-```
-
-```json
-{
-  "error": {
-    "code": "conflict",
-    "message": "This timesheet has already been approved.",
-    "requestId": "c037eea3-0a84-4fe8-b948-de786f540997"
-  }
-}
-```
-
-> The rule runs inside the transaction on a locked row, so two approvals cannot race.
-
-**What this proves.** The application supplied about ten lines of rule. The transaction, the lock, the audit row and the required reason came from the route declaration.
-
-## Challenge 8 — Show the trail
-
-Every committed change, with the diff and the reason.
-
-**GET /activity?entityType=timesheets** — as Sam Okafor → **200**
-
-```bash
-curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
-  "https://timesheetdemo.customapis.co/activity?entityType=timesheets"
-```
-
-```json
-{
-  "data": [
-    {
-      "id": 1,
-      "tenantId": 3,
-      "partitionValue": 3,
-      "entityType": "timesheets",
-      "entityId": 5001,
-      "action": "update",
-      "actorId": 42,
-      "actorDisplayName": "Sam Okafor",
-      "changes": {
-        "status": {
-          "to": "approved",
-          "from": "submitted"
-        },
-        "lastUpdatedAt": {
-          "to": "2026-08-31T03:26:45.086Z",
-          "from": "2026-08-31T03:26:44.691Z"
-        },
-        "lastUpdatedById": {
-          "to": 42,
-          "from": "41"
-        },
-        "lastUpdatedByDisplayName": {
-          "to": "Sam Okafor",
-          "from": "Alice Nguyen"
-        }
-      },
-      "systemMessage": "update timesheets",
-      "userMessage": "Checked against the roster; hours match the shift.",
-      "correlationId": "158ba3f2-9f47-4647-9b87-eebeca42765b",
-      "userAgentRequestId": null,
-      "context": {},
-      "createdAt": "2026-08-31T03:26:45.069Z"
-    }
-  ],
-  "meta": {
-    "requestId": "1a375864-c371-49ed-8ac1-72c55095b0b1",
-    "page": {
-      "limit": 25,
-      "offset": 0
-    }
-  }
-}
-```
-
-> The approval, its field-level diff, and the reason it required.
-
-**GET /activity?entityType=timesheets** — as Omar Haddad → **200**
-
-```bash
-curl -sS -H "Authorization: Bearer $DEMO_KESTREL_PAYROLL" \
-  "https://timesheetdemo.customapis.co/activity?entityType=timesheets"
-```
-
-```json
-{
-  "data": [],
-  "meta": {
-    "requestId": "bafc9783-b0ba-4a87-bbb7-8ab842a49149",
-    "page": {
-      "limit": 25,
-      "offset": 0
-    }
-  }
-}
-```
-
-> Kestrel sees an empty trail. The audit API is tenant-scoped like everything else.
-
-**What this proves.** `/activity` is an ordinary search route on a framework-shipped model — filters, paging, tenant scoping and documentation all inherited. **The audit API is not a special case.**
-
-## Challenge 9 — Read the documentation your key can see
+## Challenge 6 — Read the documentation your key can see
 
 The API documents itself, generated from the same route registry that serves the requests — so it cannot drift. What it shows you depends on who is asking.
 
@@ -1132,4 +850,247 @@ curl -sS -H "Authorization: Bearer $DEMO_PAYROLL" \
 > Payroll gets invoices back and still no approve. Diff the three.
 
 **What this proves.** A consumer cannot be tempted by an endpoint it would be refused, because it never sees one. The docs are a projection of the same permissions the pipeline enforces — and `?key=` is how any caller gets their own copy.
+
+## The write sequence — Do the write, on a row you make
+
+Seven steps in order, against **a row step 1 creates for you**. Approval is a real write — in a transaction, on a locked row, audited on commit, and it demands a written reason — and it can happen to a row exactly once. So the sequence provisions its own row rather than naming one: every visitor gets the same seven statuses, however many times they run it, and nobody has to reseed anything first.
+
+### Step 1 — Make a row of your own
+
+**POST /timesheets** — as Alice Nguyen → **201**
+
+```bash
+curl -sS -H "Authorization: Bearer $DEMO_EMPLOYEE" \
+  -H "Content-Type: application/json" \
+  -d '{"employeeId":81,"workDate":"2026-08-31","startAt":"2026-08-31T07:00:00Z","endAt":"2026-08-31T15:00:00Z","hours":8,"status":"submitted","note":"Shift I am about to have approved"}' \
+  -X POST \
+  "https://timesheetdemo.customapis.co/timesheets"
+```
+
+```json
+{
+  "data": {
+    "id": 5001,
+    "employeeId": 81,
+    "workDate": "2026-08-31",
+    "startAt": "2026-08-31T07:00:00.000Z",
+    "endAt": "2026-08-31T15:00:00.000Z",
+    "hours": "8.00",
+    "status": "submitted",
+    "note": "Shift I am about to have approved",
+    "createdById": 41,
+    "createdByDisplayName": "Alice Nguyen",
+    "createdAt": "2026-08-31T04:51:14.775Z",
+    "lastUpdatedById": 41,
+    "lastUpdatedByDisplayName": "Alice Nguyen",
+    "lastUpdatedAt": "2026-08-31T04:51:14.775Z",
+    "ownerId": 41,
+    "ownerDisplayName": "Alice Nguyen",
+    "tenantId": 3
+  },
+  "meta": {
+    "requestId": "648cf442-e11a-4e7e-9605-d25e91a6e5d4"
+  }
+}
+```
+
+> Your own row, in the Scratch Sandbox — the only company any key can write to. `ownerId` is stamped by the server from the caller, so you cannot claim to be someone else by sending it. **Every step below uses the id this returns.**
+
+### Step 2 — Approve it as the person who wrote it
+
+**POST /timesheets/5001/approve** — as Alice Nguyen → **403**
+
+```bash
+curl -sS -H "Authorization: Bearer $DEMO_EMPLOYEE" \
+  -H "Content-Type: application/json" \
+  -d '{"auditMessage":"looks fine to me"}' \
+  -X POST \
+  "https://timesheetdemo.customapis.co/timesheets/5001/approve"
+```
+
+```json
+{
+  "error": {
+    "code": "permission_denied",
+    "message": "Permission denied for this operation.",
+    "requestId": "63be02f4-d3aa-4f1b-8113-bb8a9859ac47"
+  }
+}
+```
+
+> The only 403 in the demo. Alice holds no approve permission at all, so the refusal is decided before any row is loaded — it is about her, not about the row.
+
+### Step 3 — Approve it without saying why
+
+**POST /timesheets/5001/approve** — as Sam Okafor → **400**
+
+```bash
+curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
+  -H "Content-Type: application/json" \
+  -d '{}' \
+  -X POST \
+  "https://timesheetdemo.customapis.co/timesheets/5001/approve"
+```
+
+```json
+{
+  "error": {
+    "code": "audit_message_required",
+    "message": "A \"auditMessage\" is required for this operation.",
+    "requestId": "fbf4c4c8-158b-47fa-901b-36ab41ce05d6"
+  }
+}
+```
+
+> A written reason is not optional, and it is not application code — one line of route config makes it mandatory.
+
+### Step 4 — Approve a row you can only read
+
+**POST /timesheets/1041/approve** — as Sam Okafor → **404**
+
+```bash
+curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
+  -H "Content-Type: application/json" \
+  -d '{"auditMessage":"Approving a Harbourline row."}' \
+  -X POST \
+  "https://timesheetdemo.customapis.co/timesheets/1041/approve"
+```
+
+```json
+{
+  "error": {
+    "code": "not_found",
+    "message": "Not found.",
+    "requestId": "d347da94-1e65-4259-9fe0-afc105703e2f"
+  }
+}
+```
+
+> Timesheet 1041 is in Harbourline — **Sam's own company**, and he reads it fine in challenge 4. The curated companies are read-only for every key, so the write is refused. Note the 404, not a 403: the refusal does not admit the row exists.
+
+### Step 5 — Approve it properly
+
+**POST /timesheets/5001/approve** — as Sam Okafor → **200**
+
+```bash
+curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
+  -H "Content-Type: application/json" \
+  -d '{"auditMessage":"Checked against the roster; hours match."}' \
+  -X POST \
+  "https://timesheetdemo.customapis.co/timesheets/5001/approve"
+```
+
+```json
+{
+  "data": {
+    "id": 5001,
+    "employeeId": 81,
+    "workDate": "2026-08-31",
+    "startAt": "2026-08-31T07:00:00.000Z",
+    "endAt": "2026-08-31T15:00:00.000Z",
+    "hours": "8.00",
+    "status": "approved",
+    "note": "Shift I am about to have approved",
+    "ownerId": 41,
+    "ownerDisplayName": "Alice Nguyen",
+    "createdById": 41,
+    "createdByDisplayName": "Alice Nguyen",
+    "createdAt": "2026-08-31T04:51:14.775Z",
+    "lastUpdatedById": 42,
+    "lastUpdatedByDisplayName": "Sam Okafor",
+    "lastUpdatedAt": "2026-08-31T04:51:15.114Z",
+    "tenantId": 3
+  },
+  "meta": {
+    "requestId": "bdc96e1a-60a1-4b6c-8927-73a99c665760"
+  }
+}
+```
+
+> The row is Alice's, so Sam reaches it only through his owner exemption. In a transaction, on a locked row, audited on commit. The reason is in the trail forever.
+
+### Step 6 — Approve it twice
+
+**POST /timesheets/5001/approve** — as Sam Okafor → **409**
+
+```bash
+curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
+  -H "Content-Type: application/json" \
+  -d '{"auditMessage":"And again."}' \
+  -X POST \
+  "https://timesheetdemo.customapis.co/timesheets/5001/approve"
+```
+
+```json
+{
+  "error": {
+    "code": "conflict",
+    "message": "This timesheet has already been approved.",
+    "requestId": "36d603e9-fc34-4252-9f9e-658db99bdeb3"
+  }
+}
+```
+
+> The guard runs inside the same transaction as the write, so two approvals cannot race each other. On your own row this is reproducible on demand.
+
+### Step 7 — Read your own reason back
+
+**GET /activity?entityType=timesheets&entityId=5001** — as Sam Okafor → **200**
+
+```bash
+curl -sS -H "Authorization: Bearer $DEMO_DUTY_MANAGER" \
+  "https://timesheetdemo.customapis.co/activity?entityType=timesheets&entityId=5001"
+```
+
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "tenantId": 3,
+      "partitionValue": 3,
+      "entityType": "timesheets",
+      "entityId": 5001,
+      "action": "update",
+      "actorId": 42,
+      "actorDisplayName": "Sam Okafor",
+      "changes": {
+        "status": {
+          "to": "approved",
+          "from": "submitted"
+        },
+        "lastUpdatedAt": {
+          "to": "2026-08-31T04:51:15.114Z",
+          "from": "2026-08-31T04:51:14.775Z"
+        },
+        "lastUpdatedById": {
+          "to": 42,
+          "from": "41"
+        },
+        "lastUpdatedByDisplayName": {
+          "to": "Sam Okafor",
+          "from": "Alice Nguyen"
+        }
+      },
+      "systemMessage": "update timesheets",
+      "userMessage": "Checked against the roster; hours match.",
+      "correlationId": "bdc96e1a-60a1-4b6c-8927-73a99c665760",
+      "userAgentRequestId": null,
+      "context": {},
+      "createdAt": "2026-08-31T04:51:15.080Z"
+    }
+  ],
+  "meta": {
+    "requestId": "0f52cbce-a73a-4bfb-ba09-f3d31b4c1a52",
+    "page": {
+      "limit": 25,
+      "offset": 0
+    }
+  }
+}
+```
+
+> Your reason in the trail, with the field-level diff — not a stranger's. Scoped to your row on purpose: unscoped, the shared sandbox would show other people's.
+
+**What this proves.** The application supplied about ten lines of rule. The transaction, the lock, the audit row and the required reason came from the route declaration. The two refusals differ on purpose: **403 means the permission is missing, 404 means everything else** — not yours, not your department, not your company, never existed. All of those are the same response, so the boundary cannot be mapped by probing it.
 
