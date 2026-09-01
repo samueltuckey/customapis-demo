@@ -4,7 +4,9 @@
  *
  * The duty manager holds no `customapis_*_invoice` permission, so these routes return
  * **403** — decided from one `can()` call before any row is loaded. It is the demo's only
- * 403: he is not told a particular invoice is out of reach, he is told the resource is.
+ * refusal of a whole RESOURCE: he is not told a particular invoice is out of reach, he is
+ * told invoices are. The other two 403s — the employee and payroll approving — refuse an
+ * operation on a resource they can otherwise read, which is a different shape of no.
  */
 
 import type { PgrmFramework } from 'pgrm';
