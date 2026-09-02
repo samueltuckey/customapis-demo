@@ -55,6 +55,13 @@ export function registerTimesheetCrudRoutes(f: PgrmFramework): void {
       'Submit a timesheet. The `employeeId` must be in your write scope — the Scratch ' +
       'Sandbox here — or you get a 404; `GET /me` names one your key can use. ' +
       `${COST_RATE_NOTE}`,
+    // A create is a committed change, so it leaves a trail like any other. `true` rather
+    // than `{ requireUserMessage: true }`: the approve route demands a written reason
+    // because approving is a judgement someone should have to justify, and submitting your
+    // own hours is not. Without this the page's claim that every write lands in /activity
+    // was false for exactly one operation — the one a visitor is most likely to perform.
+    audit: true,
+
     // No `defaultFieldValues` for `status`, deliberately: the column has a database
     // default, so the write schema makes it optional and the DATABASE supplies 'draft'.
     // Declaring it here would send a value on every INSERT, the DB default would never
