@@ -15,7 +15,7 @@
  * system.** Here it is a lookup in `personas.json` — the same shape, from a fixture.
  */
 
-import type { GetAppUser, PermissionGrant } from 'pgrm';
+import type { GetAppUser, JsonObject, PermissionGrant } from 'pgrm';
 import personas from '../demo/personas.json' with { type: 'json' };
 
 /** One persona, exactly as the fixture stores it. */
@@ -32,8 +32,17 @@ export interface Persona {
   grants: Record<string, string[]>;
   /** Presentation only — what `GET /me` publishes. Not an access-management concept. */
   demo: {
+    /** DEMO-ONLY: the sandbox employee id, mirrored from `db/seed.sql` — a caller who may
+     *  create a timesheet needs one, and the curated companies own every other row. */
+    writeEmployeeId?: number;
     cannot: Array<{ plain: string; why: string; expect: number | string }>;
-    tryThis: string[];
+    /** Same shape as `cannot`: an outcome pre-committed per call, refusal or not. */
+    tryThis: Array<{
+      call: string;
+      body?: JsonObject;
+      expect: number | string;
+      why: string;
+    }>;
   };
 }
 

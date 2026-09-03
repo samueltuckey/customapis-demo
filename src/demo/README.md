@@ -13,8 +13,10 @@ this directory entirely.
 | `keys.ts` | Credential issuance | An IdP. Tokens are issued, stored hashed, and never returned by an API |
 | `personas.json` | Your access-management system | A service that owns roles and grants, called over HTTP |
 | `websocket.ts` | A subscriber | An authenticated subscription, filtered per subscriber |
+| `challenges.ts` | *(nothing)* | Seven reads and the seven-step write sequence, as data — asserted by `scripts/replay.ts`, served by the route below |
 | `routes/keys.ts` | *(nothing)* | No real API serves credentials |
 | `routes/events.ts` | *(nothing)* | No real consumer polls a REST endpoint for events |
+| `routes/challenges.ts` | *(nothing)* | No real API ships its own exercises |
 
 ## Why the seams are *not* in here
 

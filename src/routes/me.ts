@@ -9,6 +9,9 @@
  * The `cannot` array is how an agent knows what to *attempt*, and `expect` pre-commits the
  * server to an outcome the caller can verify. The harness asserts every one against a real
  * response, or the demo could be caught lying by the mechanism meant to prove its honesty.
+ *
+ * `tryThis` carries the same `expect`, and leads with a call that SUCCEEDS: a suggestion
+ * list that is all refusals reads as a broken key rather than as a working boundary.
  */
 
 import type { PgrmFramework, RequestContext } from 'pgrm';
@@ -71,6 +74,11 @@ function whoAmI(ctx: RequestContext): void {
             `${profile.writeCompanies.join(', ')}); the curated companies are read-only, ` +
             `so a write there is a 404`
           : 'read-only: this key holds no write permission in any company',
+      // `POST /timesheets` needs an `employeeId` inside the write scope, and the sandbox
+      // has exactly one worker — so name it here rather than make every caller search.
+      ...(profile.demo.writeEmployeeId !== undefined
+        ? { writeEmployeeId: profile.demo.writeEmployeeId }
+        : {}),
       departments: profile.departments
         ? [...profile.departments]
         : 'all departments in your companies',

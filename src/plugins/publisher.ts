@@ -59,8 +59,12 @@ let connection: Sequelize | undefined;
 export async function readRecentEvents(limit = 50): Promise<Array<Record<string, unknown>>> {
   if (!connection) throw new Error('demo publisher was never created; no connection to read from');
   return (await connection.query(
+    // `correlationId` is selected so the backfill matches the socket field for field. A
+    // client correlating an event to its own request must get the same answer whether the
+    // event arrived live or was read back after a reload.
     `SELECT event_type AS "eventType", model, tenant_id AS "tenantId",
-            object_data AS "objectData", emitted_at AS "emittedAt"
+            object_data AS "objectData", correlation_id AS "correlationId",
+            emitted_at AS "emittedAt"
        FROM demo_events ORDER BY emitted_at DESC, id DESC LIMIT $1`,
     { bind: [limit], type: QueryTypes.SELECT },
   )) as Array<Record<string, unknown>>;
@@ -76,6 +80,11 @@ export function createPublisher(sequelize: Sequelize): Publisher {
         tenantId: event.tenantId === null ? null : String(event.tenantId),
         objectData: event.objectData,
         emittedAt: new Date(event.epochTimestamp).toISOString(),
+        // `ctx.requestId`, which is also the `x-api-request-id` response header and the
+        // audit row's `correlationId`. Without it a subscriber can only guess which call
+        // produced an event — matching on row id and timing, which is a guess dressed as
+        // a fact. With it, a client that made a request can prove the event is its own.
+        correlationId: event.correlationId,
       };
 
       // Reason 1 above: no filtering, in a sandbox where everything is public.
@@ -90,14 +99,16 @@ export function createPublisher(sequelize: Sequelize): Publisher {
 
       try {
         await sequelize.query(
-          `INSERT INTO demo_events (event_type, model, tenant_id, object_data, emitted_at)
-           VALUES ($1, $2, $3, $4, $5)`,
+          `INSERT INTO demo_events
+             (event_type, model, tenant_id, object_data, correlation_id, emitted_at)
+           VALUES ($1, $2, $3, $4, $5, $6)`,
           {
             bind: [
               record.eventType,
               record.model,
               record.tenantId,
               JSON.stringify(record.objectData ?? null),
+              record.correlationId,
               record.emittedAt,
             ],
             type: QueryTypes.INSERT,

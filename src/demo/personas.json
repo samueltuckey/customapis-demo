@@ -21,10 +21,12 @@
         "3"
       ],
       "customapis_get_employees": [
-        "1"
+        "1",
+        "3"
       ],
       "customapis_search_employees": [
-        "1"
+        "1",
+        "3"
       ],
       "customapis_read_activity": [
         "1",
@@ -32,6 +34,7 @@
       ]
     },
     "demo": {
+      "writeEmployeeId": 81,
       "cannot": [
         {
           "plain": "See a colleague's timesheet",
@@ -60,9 +63,43 @@
         }
       ],
       "tryThis": [
-        "GET /timesheets/1042",
-        "POST /timesheets/1041/approve",
-        "GET /timesheets/1043"
+        {
+          "call": "GET /timesheets",
+          "expect": 200,
+          "why": "the control — your own rows, in both companies you can read"
+        },
+        {
+          "call": "POST /timesheets",
+          "body": {
+            "employeeId": 81,
+            "workDate": "2026-08-12",
+            "startAt": "2026-08-12T07:00:00Z",
+            "endAt": "2026-08-12T15:00:00Z",
+            "hours": 8,
+            "status": "submitted",
+            "note": "Sandbox shift"
+          },
+          "expect": 201,
+          "why": "employee 81 is the Scratch Sandbox worker — the only one in your write scope"
+        },
+        {
+          "call": "GET /timesheets/1042",
+          "expect": 404,
+          "why": "Ben's row: same company, same department, different owner"
+        },
+        {
+          "call": "POST /timesheets/1041/approve",
+          "body": {
+            "auditMessage": "Attempting an approval I hold nowhere."
+          },
+          "expect": 403,
+          "why": "no approve permission anywhere, so no row is ever loaded"
+        },
+        {
+          "call": "GET /timesheets/1043",
+          "expect": 404,
+          "why": "a Kestrel row, and a valid id"
+        }
       ]
     }
   },
@@ -95,10 +132,12 @@
         "3"
       ],
       "customapis_get_employees": [
-        "1"
+        "1",
+        "3"
       ],
       "customapis_search_employees": [
-        "1"
+        "1",
+        "3"
       ],
       "customapis_read_activity": [
         "1",
@@ -106,6 +145,7 @@
       ]
     },
     "demo": {
+      "writeEmployeeId": 81,
       "cannot": [
         {
           "plain": "See cost rates",
@@ -129,10 +169,38 @@
         }
       ],
       "tryThis": [
-        "GET /timesheets/1042",
-        "GET /timesheets/1045",
-        "POST /timesheets/1041/approve",
-        "POST /timesheets/1046/approve"
+        {
+          "call": "GET /timesheets/1042",
+          "expect": 200,
+          "why": "the control — Alice's row, which Alice's own key cannot fetch"
+        },
+        {
+          "call": "GET /timesheets/1045",
+          "expect": 200,
+          "why": "the Kitchen: you carry no department restriction"
+        },
+        {
+          "call": "POST /timesheets",
+          "body": {
+            "employeeId": 81,
+            "workDate": "2026-08-12",
+            "startAt": "2026-08-12T07:00:00Z",
+            "endAt": "2026-08-12T15:00:00Z",
+            "hours": 8,
+            "status": "submitted",
+            "note": "Sandbox shift"
+          },
+          "expect": 201,
+          "why": "employee 81 is the Scratch Sandbox worker — the only one in your write scope"
+        },
+        {
+          "call": "POST /timesheets/1041/approve",
+          "body": {
+            "auditMessage": "Approving a Harbourline row."
+          },
+          "expect": 404,
+          "why": "you can read Harbourline and write only the sandbox"
+        }
       ]
     }
   },
@@ -168,10 +236,12 @@
         "3"
       ],
       "customapis_get_employees": [
-        "1"
+        "1",
+        "3"
       ],
       "customapis_search_employees": [
-        "1"
+        "1",
+        "3"
       ],
       "customapis_read_activity": [
         "1",
@@ -179,6 +249,7 @@
       ]
     },
     "demo": {
+      "writeEmployeeId": 81,
       "cannot": [
         {
           "plain": "See another department's timesheet",
@@ -202,9 +273,38 @@
         }
       ],
       "tryThis": [
-        "GET /timesheets/1041",
-        "GET /timesheets/1045",
-        "POST /timesheets/1041/approve"
+        {
+          "call": "GET /timesheets/1041",
+          "expect": 200,
+          "why": "the control — Front of House, the department you manage"
+        },
+        {
+          "call": "GET /timesheets/1045",
+          "expect": 404,
+          "why": "the Kitchen: a sibling department, same company and same location"
+        },
+        {
+          "call": "POST /timesheets",
+          "body": {
+            "employeeId": 81,
+            "workDate": "2026-08-12",
+            "startAt": "2026-08-12T07:00:00Z",
+            "endAt": "2026-08-12T15:00:00Z",
+            "hours": 8,
+            "status": "submitted",
+            "note": "Sandbox shift"
+          },
+          "expect": 201,
+          "why": "employee 81 is the Scratch Sandbox worker — the only one in your write scope"
+        },
+        {
+          "call": "POST /timesheets/1041/approve",
+          "body": {
+            "auditMessage": "Dept manager approving a row in his own company."
+          },
+          "expect": 404,
+          "why": "you can read Harbourline and write only the sandbox"
+        }
       ]
     }
   },
@@ -265,8 +365,24 @@
         }
       ],
       "tryThis": [
-        "GET /timesheets/1041",
-        "GET /timesheets/1043"
+        {
+          "call": "GET /timesheets/1041",
+          "expect": 200,
+          "why": "the control — and the only view of it carrying `costRate`"
+        },
+        {
+          "call": "GET /timesheets/1043",
+          "expect": 404,
+          "why": "a Kestrel row, and a valid id"
+        },
+        {
+          "call": "POST /timesheets/1041/approve",
+          "body": {
+            "auditMessage": "Payroll attempting an approval."
+          },
+          "expect": 403,
+          "why": "no approve permission anywhere, so no row is ever loaded"
+        }
       ]
     }
   },
@@ -311,8 +427,16 @@
         }
       ],
       "tryThis": [
-        "GET /timesheets/1041",
-        "GET /timesheets/1043"
+        {
+          "call": "GET /timesheets/1043",
+          "expect": 200,
+          "why": "the control — a Kestrel row"
+        },
+        {
+          "call": "GET /timesheets/1041",
+          "expect": 404,
+          "why": "a Harbourline row: identical permissions, different company"
+        }
       ]
     }
   }

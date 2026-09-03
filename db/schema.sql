@@ -46,9 +46,10 @@ CREATE SEQUENCE global_id_seq START 1000;
 
 
 -- ── Identity ───────────────────────────────────────────────────────────────────────
--- Local user table, bigint ids. Deliberately NOT UUIDs: pgrm's actor columns
--- (`created_by_id`, `owner_id`) are bigint and unconditionally number-coerced, so a UUID
--- subject serialises to NaN. No route is ever declared on this table.
+-- Local user table, bigint ids, matching pgrm's actor columns (`created_by_id`,
+-- `owner_id`). Ids are integers end to end: a non-integer is rejected at the boundary
+-- rather than coerced, so a mismatch surfaces as an error and never as a wrong row.
+-- No route is ever declared on this table.
 CREATE TABLE local_users (
   id                BIGINT PRIMARY KEY DEFAULT nextval('global_id_seq'),
   display_name      TEXT NOT NULL,

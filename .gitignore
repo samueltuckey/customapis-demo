@@ -10,3 +10,6 @@ scripts/_*.ts
 
 # The framework tarball is a local file: dependency; never vendored into the repo
 *.tgz
+
+# Generated on demand by `npm run transcript`. Not committed: see README.
+TRANSCRIPT.md
