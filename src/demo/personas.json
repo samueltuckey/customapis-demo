@@ -200,14 +200,6 @@
           },
           "expect": 404,
           "why": "you can read Harbourline and write only the sandbox"
-        },
-        {
-          "call": "POST /timesheets/1046/approve",
-          "body": {
-            "auditMessage": "Checked against the roster; hours match the shift."
-          },
-          "expect": "200, or 409 if another visitor got there first — approve the row you created above instead",
-          "why": "1046 is a shared seed row and approval is one-shot until the nightly rebuild"
         }
       ]
     }
