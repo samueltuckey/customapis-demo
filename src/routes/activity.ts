@@ -30,10 +30,15 @@ export function registerActivityRoutes(f: PgrmFramework): void {
     // "Newest first" is a promise, so it has to be declared: without this the framework
     // falls back to the primary key ascending. `id` is pinned descending too, or it gets
     // appended ASC as the tiebreak and same-instant rows come back oldest-first.
-    sort: [
-      { field: 'createdAt', direction: 'desc' },
-      { field: 'id', direction: 'desc' },
-    ],
+    // `allow` caps ordering the way `filters.allow` caps filtering: every index on this
+    // table is `created_at DESC`, so any other column sorts the whole trail before paging.
+    sort: {
+      allow: ['createdAt', 'id'],
+      default: [
+        { field: 'createdAt', direction: 'desc' },
+        { field: 'id', direction: 'desc' },
+      ],
+    },
     // Default-deny. `changes`, `context` and the message fields stay unfilterable —
     // JSONB predicates and text search are unindexable at any scale — but are still
     // RETURNED, which is what the diff and the approval reason need.
