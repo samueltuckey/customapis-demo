@@ -129,8 +129,9 @@ company does this row belong to", and it is the thing every scoping decision abo
   the first two and ignore this one.**
 - **`src/model/`** is generated from the database and hand-edited by nobody
   ([README](src/model/README.md)).
-- **`scripts/`** is the harness, not the application ([README](scripts/README.md)) — with the
-  challenge data it runs it is *larger* than what it tests, the honest price of the claims above.
+- **`scripts/`** is the harness, not the application ([README](scripts/README.md)) — it replays the
+  published challenges and writes the transcript. The guarantees are asserted against the deployed
+  host instead, from `customapis-infra`.
 
 "How little code" is a claim about `src/routes/` and `src/plugins/`. Measure it yourself:
 
@@ -204,7 +205,7 @@ tarball alongside:
 ```bash
 npm install
 npm run dev        # Postgres in Docker + schema + seed, then the API on :3000
-npm run verify     # typecheck, pgrm check, every guarantee asserted, challenges replayed
+npm run verify     # typecheck, pgrm check, challenges replayed
 npm run transcript # regenerate TRANSCRIPT.md from a passing run
 ```
 

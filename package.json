@@ -13,9 +13,8 @@
     "generate": "bash scripts/generate.sh",
     "typecheck": "tsc --noEmit",
     "check": "pgrm check --routes",
-    "guarantees": "npm run db:reset && tsx scripts/guarantees.ts",
     "replay": "npm run db:reset && tsx scripts/replay.ts",
-    "verify": "npm run typecheck && npm run check && npm run guarantees && npm run replay",
+    "verify": "npm run typecheck && npm run check && npm run replay",
     "transcript": "npm run db:reset && tsx scripts/replay.ts --write",
     "db:reset": "docker exec -i customapis_demo_db psql -U demo -d customapis_demo -q -v ON_ERROR_STOP=1 < db/seed.sql",
     "db:schema": "docker exec -i customapis_demo_db psql -U demo -d customapis_demo"

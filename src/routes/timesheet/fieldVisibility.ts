@@ -1,7 +1,7 @@
 /**
  * Per-caller field visibility for the timesheet resource — the shared declaration EVERY
  * route here applies. A cost rate is sensitive because of what it is, so every endpoint
- * that can put one on the wire owes the caller the same answer; `guarantees.ts` fails if
+ * that can put one on the wire owes the caller the same answer; the deploy check fails if
  * any route on this model omits it.
  *
  * **This whole file is a workaround.** It should be `requires: 'customapis_read_cost_rate'`
