@@ -3,8 +3,8 @@
  *
  * None of this is written by hand. All three are projections of the same route registry
  * that serves the requests, generated per request, so they cannot drift. Field names come
- * through the same name map the pipeline uses — a naming convention applied everywhere
- * *except* the docs ships a generated client that is wrong before anyone writes a line.
+ * through the same name map the pipeline uses, docs included — which is what makes a
+ * generated client match the API it was generated from.
  *
  * Express handlers rather than pgrm routes, for the same reason `/health` is: an OpenAPI
  * document wrapped in `{ data, meta }` is not one any tool will read.
@@ -200,10 +200,10 @@ return an identical 404. You are meant to attempt this; nothing here is real dat
 }
 
 /**
- * The deployment's tenant topology — the one thing a projection of the route registry
- * cannot know, because it lives in the identity seam's GRANTS, not on any route. Derived
- * from the same fixture `getAppUser` resolves from, so it cannot drift from enforcement:
- * a grant change reshapes this table on the next request.
+ * What the access management system says this deployment grants: which permissions, at
+ * which tenants. Here that answer is a fixture — `personas.json`, delivered by the
+ * `getAppUser` plugin — and the same one the pipeline enforces from, so this table cannot
+ * drift from what a key can actually do: a grant change reshapes it on the next request.
  */
 function deploymentSection(): string[] {
   const personaRows = Object.values(PERSONA_PROFILES).map((p) => {

@@ -145,7 +145,8 @@ export function registerTimesheetRoutes(f: PgrmFramework): void {
 
 /**
  * The rate is DELETED, not nulled, so a caller cannot tell a hidden rate from an unset one.
- * A hook rather than config, because nothing declarative removes a field per caller.
+ * Addressed in a hook — the framework gives us total control over how this route behaves.
+ * Who may see a rate is the app's rule, the same kind `approveGuard` states for approval.
  *
  * Pass the ROW to `ctx.userCan`: it carries its own `tenantId`, so the question is exact on
  * a page spanning companies. The field is `costRate` — this runs after serialization.

@@ -421,8 +421,7 @@ export function writeSequence(): WriteStep[] {
         'config makes it mandatory.',
     },
     {
-      // NOT "approve someone else's company", which the demo page says and gets wrong:
-      // Harbourline is Sam's OWN company. Read scope and write scope are separate axes.
+      // Harbourline is Sam's OWN company — read scope and write scope are separate axes.
       n: 4,
       title: 'Approve a row you can only read',
       as: 'duty_manager',

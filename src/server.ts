@@ -95,7 +95,8 @@ export function buildFramework(): PgrmFramework {
 
 /**
  * Mount the whole HTTP surface onto an Express app. Exported so the harnesses drive the
- * SAME app this serves — one that assembles its own tests an application nobody ships.
+ * SAME app this serves — a harness that assembles its own is testing an application
+ * nobody ships.
  */
 export function createApp(framework: PgrmFramework): express.Express {
   const app = express();

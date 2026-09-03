@@ -1,17 +1,15 @@
 /**
- * `GET /challenges` — the published challenges, as data an agent can execute.
+ * `GET /challenges` — a starting point for an agent testing this API.
  *
- * Visitors are handed a prompt saying "work through the challenges", and they existed only
- * on the `/demo` page as a captured run rather than a worklist, so
- * every agent invented its own and none ran the intended evaluation.
+ * Each entry is a request to make, the status it should answer with, and the context to
+ * read it by, so an agent can work the API without inventing its own exercises.
  *
  * It serves the SAME two sets `scripts/replay.ts` asserts, so a challenge published here
  * that the API does not honour fails the run before it can reach a reader.
  *
- * The reads and the write sequence are separate keys rather than one flat list because
- * they carry different contracts, and getting that wrong is what made an earlier set
- * unusable: reads are order-free and endlessly repeatable, writes are ordered and stay
- * repeatable only because step 1 mints the row the rest act on.
+ * Reads and the write sequence are separate keys because they carry different contracts:
+ * reads are order-free and endlessly repeatable, writes are ordered and stay repeatable
+ * because step 1 mints the row the rest act on.
  *
  * DEMO-ONLY: an API does not normally ship its own exercises.
  */
