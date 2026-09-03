@@ -6,8 +6,8 @@
  * the framework walks that path from the foreign keys. Rows are private to their owner
  * because the table has an `owner_id` column, which is the entire configuration.
  *
- * What IS here is the field-visibility pair every route applies — the one control this
- * framework cannot derive — and one guard on the one route that needed a rule. Note what
+ * What IS here is one field-visibility rule — who may see a cost rate is app policy, not a
+ * fact about the column — and one guard on the one route that needed a rule. Note what
  * ISN'T.
  */
 
@@ -20,8 +20,9 @@ import { schema, type PgrmFramework, type RequestContext, type TenantScopedRow }
  * answer; co-location is legibility, not enforcement — the deploy check is what fails if
  * a route on this model omits it.
  *
- * **This section is a workaround.** It should be `requires: 'customapis_read_cost_rate'`
- * on the model's `cost_rate` field, applied wherever the framework serializes a row.
+ * Stated per route today. It belongs on the model as `requires:
+ * 'customapis_read_cost_rate'` against `cost_rate`, and would then apply wherever a row is
+ * serialized.
  */
 
 /** The permission itself. Derived names are the framework's; this one is app-defined. */
@@ -37,26 +38,6 @@ const TIMESHEET_PERMISSIONS = [
 const COST_RATE_NOTE =
   '`costRate` appears only if you can read it — otherwise the field is absent, not null.';
 
-/**
- * The rate is DELETED, not nulled, so a caller cannot tell a hidden rate from an unset one.
- * A hook rather than config, because nothing declarative removes a field per caller.
- *
- * Pass the ROW to `ctx.userCan`: it carries its own `tenantId`, so the question is exact on
- * a page spanning companies. The field is `costRate` — this runs after serialization.
- */
-function hideCostRate(ctx: RequestContext): void {
-  for (const row of rowsOf(ctx.response)) {
-    if (!ctx.userCan(COST_RATE, row)) delete row['costRate'];
-  }
-}
-
-/** A serialized row carrying its stamped `tenantId`, which is what makes it a legal
- *  `ctx.userCan` subject. */
-function rowsOf(data: unknown): TenantScopedRow[] {
-  if (Array.isArray(data)) return data as TenantScopedRow[];
-  if (data && typeof data === 'object') return [data as TenantScopedRow];
-  return [];
-}
 
 // ── Routes ─────────────────────────────────────────────────────────────────────────
 export function registerTimesheetRoutes(f: PgrmFramework): void {
@@ -100,19 +81,9 @@ export function registerTimesheetRoutes(f: PgrmFramework): void {
       'Submit a timesheet. The `employeeId` must be in your write scope — the Scratch ' +
       'Sandbox here — or you get a 404; `GET /me` names one your key can use. ' +
       `${COST_RATE_NOTE}`,
-    // A create is a committed change, so it leaves a trail like any other. No
-    // `requireUserMessage`: the approve route demands a written reason because approving is
-    // a judgement someone should have to justify, and submitting your own hours is not.
-    //
-    // `durability: 'guaranteed'` is doing real work. The derived default for a route that
-    // does not demand a reason is `'best-effort'` — buffered and written AFTER commit — so
-    // the row is not readable when the 201 lands. Measured against this API: absent on 6
-    // creates out of 6, present ~25ms later. A visitor who created a row and looked for it
-    // in the trail found nothing. `'guaranteed'` puts the entry in the same transaction as
-    // the write, so it is there the moment the response is.
-    //
-    // This is the audit axis only. Events stay detached and are still drained after the
-    // response, so nothing here makes a caller wait on the socket.
+    // `'guaranteed'` writes the entry in the same transaction, so it is readable when the
+    // 201 lands; the default here would buffer it past the response. No reason demanded —
+    // approving is a judgement to justify, submitting your own hours is not.
     audit: { durability: 'guaranteed' },
 
     // No `defaultFieldValues` for `status`, deliberately: the column has a database
@@ -120,16 +91,9 @@ export function registerTimesheetRoutes(f: PgrmFramework): void {
     // Declaring it here would send a value on every INSERT, the DB default would never
     // fire, and a later migration changing it would silently do nothing.
     stageSettings: {
-      /**
-       * What a caller may WRITE is a separate question from what the model HAS; without
-       * this block the route carries every nullable column as an optional body field.
-       *
-       * `costRate` is unreadable to every persona that can create, so it must not be
-       * writable either — otherwise a caller sets a rate, never sees it, and is never told.
-       * `status` is narrowed rather than dropped: 'draft' or 'submitted' is a legitimate
-       * choice, but 'approved' belongs to `POST /timesheets/:id/approve`, which alone
-       * requires the permission, a written reason and a submitted starting state.
-       */
+      // Without this the route accepts every nullable column. `costRate` is unreadable to
+      // everyone who can create, so it must not be writable either; `approved` is narrowed
+      // out because it belongs to the approve route and the reason it demands.
       validate: {
         removeProperties: ['costRate'],
         overrideProperties: { status: schema.enumOf('draft', 'submitted') },
@@ -181,6 +145,27 @@ export function registerTimesheetRoutes(f: PgrmFramework): void {
 }
 
 // ── Code ───────────────────────────────────────────────────────────────────────────
+
+/**
+ * The rate is DELETED, not nulled, so a caller cannot tell a hidden rate from an unset one.
+ * A hook rather than config, because nothing declarative removes a field per caller.
+ *
+ * Pass the ROW to `ctx.userCan`: it carries its own `tenantId`, so the question is exact on
+ * a page spanning companies. The field is `costRate` — this runs after serialization.
+ */
+function hideCostRate(ctx: RequestContext): void {
+  for (const row of rowsOf(ctx.response)) {
+    if (!ctx.userCan(COST_RATE, row)) delete row['costRate'];
+  }
+}
+
+/** A serialized row carrying its stamped `tenantId`, which is what makes it a legal
+ *  `ctx.userCan` subject. */
+function rowsOf(data: unknown): TenantScopedRow[] {
+  if (Array.isArray(data)) return data as TenantScopedRow[];
+  if (data && typeof data === 'object') return [data as TenantScopedRow];
+  return [];
+}
 
 /**
  * The business rule. Runs INSIDE the transaction with the row already locked, so two
