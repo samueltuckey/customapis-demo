@@ -108,11 +108,6 @@ export function createPublisher(sequelize: Sequelize): Publisher {
               record.model,
               record.tenantId,
               JSON.stringify(record.objectData ?? null),
-              // The column has been here since the schema was written and nothing ever
-              // filled it, so /events/recent answered `correlationId: null` for every row.
-              // The socket carries it now, and the backfill the feed loads on arrival has
-              // to agree with the socket or the same event correlates one way live and
-              // another way after a refresh.
               record.correlationId,
               record.emittedAt,
             ],
