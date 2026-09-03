@@ -17,12 +17,14 @@ export function openCors(): RequestHandler {
   return (req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type, X-Request-Id');
+    // `x-ua-request-id` is the caller's own correlation id, and it appears on both lines
+    // because pgrm echoes it back under the same name.
+    res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type, x-ua-request-id');
     // Never `Access-Control-Allow-Credentials`: incompatible with `*`, and this API
     // authenticates by header rather than cookie. `date` is exposed because it is the
     // server's clock — anything counting down to a key rotation needs it, since the
     // visitor's own clock may be wrong by hours.
-    res.setHeader('Access-Control-Expose-Headers', 'x-api-request-id, x-request-id, date');
+    res.setHeader('Access-Control-Expose-Headers', 'x-api-request-id, x-ua-request-id, date');
 
     // Preflight is answered here, ahead of the framework's router.
     if (req.method === 'OPTIONS') {
