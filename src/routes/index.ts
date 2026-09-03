@@ -1,5 +1,5 @@
 import type { PgrmFramework } from 'pgrm';
-import { registerTimesheetRoutes } from './timesheet/index.js';
+import { registerTimesheetRoutes } from './timesheet.js';
 import { registerMeRoutes } from './me.js';
 import { registerEmployeeRoutes } from './employee.js';
 import { registerInvoiceRoutes } from './invoice.js';

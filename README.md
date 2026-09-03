@@ -109,8 +109,7 @@ company does this row belong to", and it is the thing every scoping decision abo
 | Look at | Because |
 |---|---|
 | [`src/server.ts`](src/server.ts) | **Start here.** The whole application is one `createFramework` object. Read what is *not* in it |
-| [`src/routes/timesheet/crud.ts`](src/routes/timesheet/crud.ts) | The whole timesheet resource. No tenant filter anywhere, because there is nowhere to put one |
-| [`src/routes/timesheet/approve.ts`](src/routes/timesheet/approve.ts) | A named business action as an ordinary route. Ten lines of rule; the transaction, the row lock, the audit entry and the required reason are not ours |
+| [`src/routes/timesheet.ts`](src/routes/timesheet.ts) | The whole timesheet resource — four routes, one guard. No tenant filter anywhere, because there is nowhere to put one; and the named business action is an ordinary route, fifteen lines of rule, with the transaction, the row lock, the audit entry and the required reason all not ours |
 | [`src/plugins/getIdentityUser.ts`](src/plugins/getIdentityUser.ts) | Verification — proves the credential, every request, never cached |
 | [`src/plugins/getAppUser.ts`](src/plugins/getAppUser.ts) | Resolution — the only place authorization is decided, and it never touches a credential |
 | [`src/demo/personas.json`](src/demo/personas.json) | The answer an access-management system would return. Data, not code |
@@ -159,8 +158,8 @@ The absence is the argument. None of this is in this repository:
 - Per-window credential rotation, verification failure classification, event delivery ordering
 
 Most of what is left is declaration. The **actual business rules are a state-machine guard on
-approval and a per-caller field check** — read [`approve.ts`](src/routes/timesheet/approve.ts) and
-[`fieldVisibility.ts`](src/routes/timesheet/fieldVisibility.ts) and you have seen them both.
+approval and a per-caller field check** — both are in
+[`timesheet.ts`](src/routes/timesheet.ts), and reading that one file is seeing them both.
 
 ---
 
