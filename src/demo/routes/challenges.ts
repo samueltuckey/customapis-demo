@@ -2,7 +2,7 @@
  * `GET /challenges` — the published challenges, as data an agent can execute.
  *
  * Visitors are handed a prompt saying "work through the challenges", and they existed only
- * on the `/demo` page and inside `TRANSCRIPT.md` — a captured run, not a worklist — so
+ * on the `/demo` page as a captured run rather than a worklist, so
  * every agent invented its own and none ran the intended evaluation.
  *
  * It serves the SAME two sets `scripts/replay.ts` asserts, so a challenge published here

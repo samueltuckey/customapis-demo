@@ -5,8 +5,9 @@
  *
  * ONE script, TWO modes. Bare, it only asserts — that is what `npm run verify` runs, and
  * it leaves the working tree alone. With `--write` it also renders `TRANSCRIPT.md`, which
- * is committed: for a repository nobody can run, the captured transcript is the reader's
- * only substitute for running it.
+ * is NOT committed: it ran longer than the application it documents, and `GET /challenges`
+ * already names every request and the status it should answer with. Generate it when you
+ * want the response bodies; it is gitignored.
  *
  * The transcript is **generated, never maintained** — regenerate it rather than editing
  * it, because a transcript that disagrees with the live demo is worse than no transcript

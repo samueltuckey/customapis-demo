@@ -8,7 +8,7 @@ anything from here.
 
 | File | What it is |
 |---|---|
-| `replay.ts` | Runs the seven reads and the seven-step write sequence, asserts every response, and writes `TRANSCRIPT.md` from the same pass |
+| `replay.ts` | Runs the seven reads and the seven-step write sequence, asserts every response, and writes `TRANSCRIPT.md` on `--write` (generated on demand, not committed) |
 | `dev-up.sh` | Local bring-up: Postgres in Docker, schema, seed |
 
 ## The other harness, and where it went
