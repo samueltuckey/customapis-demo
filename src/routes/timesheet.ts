@@ -121,8 +121,7 @@ export function registerTimesheetRoutes(f: PgrmFramework): void {
     path: '/timesheets/:id/approve',
 
     // ── Optional — every line below is a CHOICE, not a requirement ─────────────────
-    // A custom guard is invisible to the OpenAPI generator, so the rule has to be described
-    // or no integrator — and no agent — will know it exists.
+    // Describe the custom action for the docs - openapi, llm etc.
     description:
       'Approve a submitted timesheet. Needs a written reason in `auditMessage`, which lands ' +
       'in the audit trail. Approving twice is a 409; approving outside your write scope — ' +
@@ -135,9 +134,9 @@ export function registerTimesheetRoutes(f: PgrmFramework): void {
       validate: {
         removeProperties: ['status', 'costRate', 'hours', 'note', 'workDate', 'startAt', 'endAt'],
       },
+      // hooks for custom business logic - only approve once
       operation: { before: approveGuard, after: emitApproved },
-      // The same field-visibility hook every other route on this model carries. An update
-      // returns the row, so it discloses exactly what a read discloses.
+      // hide constRate if you done have permission
       processReturnData: { after: hideCostRate },
     },
     consultedPermissions: [...TIMESHEET_PERMISSIONS],
