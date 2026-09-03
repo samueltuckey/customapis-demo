@@ -73,9 +73,9 @@ function howToNarrow(persona: string | undefined): string {
 }
 
 /**
- * The hand-written routes, described by hand: a generated projection cannot infer the
- * shape of a handler nobody declared a model for. `/me` matters most — it is where the
- * docs send an agent first, and would otherwise be undocumented in the spec.
+ * The hand-written routes, described by hand. Declared routes document themselves; a raw
+ * handler is described through `customFragments` and merges into the same spec. `/me`
+ * matters most — it is where the docs send an agent first.
  */
 const CUSTOM_ROUTES: Record<string, Record<string, any>> = {
   '/me': {
@@ -133,9 +133,9 @@ export function openApiDoc(framework: PgrmFramework): RequestHandler {
       title: TITLE,
       viewer,
       description: `${howToNarrow(persona)}\n\nGenerated from the live route registry on every request.`,
-      // Custom routes are excluded from the generated projection by design — the
-      // framework cannot infer a schema for a hand-written handler. These are the ones
-      // an agent needs most, so the demo describes them itself.
+      // Declared routes document themselves; raw handlers are described here and merged
+      // into the same spec. `/me` is the first route an agent reads, so it matters that
+      // it lands in the document.
       customFragments: CUSTOM_ROUTES,
     });
     res.type('application/json').send(JSON.stringify(doc, null, 2));

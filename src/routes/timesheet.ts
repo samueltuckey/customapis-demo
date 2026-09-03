@@ -6,9 +6,9 @@
  * the framework walks that path from the foreign keys. Rows are private to their owner
  * because the table has an `owner_id` column, which is the entire configuration.
  *
- * What IS here is one field-visibility rule — who may see a cost rate is app policy, not a
- * fact about the column — and one guard on the one route that needed a rule. Note what
- * ISN'T.
+ * What IS here is the app's own policy: who may see a cost rate, and who may approve. The
+ * framework takes both as written — any field, any rule you can express — and derived
+ * everything around them.
  */
 
 import { schema, type PgrmFramework, type RequestContext, type TenantScopedRow } from 'pgrm';
@@ -19,10 +19,7 @@ import { schema, type PgrmFramework, type RequestContext, type TenantScopedRow }
  * what it is, so every endpoint that can put one on the wire owes the caller the same
  * answer; co-location is legibility, not enforcement — the deploy check is what fails if
  * a route on this model omits it.
- *
- * Stated per route today. It belongs on the model as `requires:
- * 'customapis_read_cost_rate'` against `cost_rate`, and would then apply wherever a row is
- * serialized.
+
  */
 
 /** The permission itself. Derived names are the framework's; this one is app-defined. */
