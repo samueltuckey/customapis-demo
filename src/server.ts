@@ -103,10 +103,10 @@ export function createApp(framework: PgrmFramework): express.Express {
 
   app.use(openCors());
 
-  // Per-caller responses, so a shared cache in front of the app must not hold them: the
-  // keys expire, and both doc projections vary by `?key=` and by the bearer header — a CDN
-  // keyed on the path alone was serving one visitor's permission-filtered spec to the next.
-  app.use(['/keys', '/openapi.json', '/docs.md'], (_req, res, next) => {
+  // pgrm sends `no-store` on everything its router serves. These two are Express handlers
+  // ahead of it, and both doc projections vary by `?key=` and by the bearer header — a CDN
+  // keyed on the path alone serves one visitor's permission-filtered spec to the next.
+  app.use(['/openapi.json', '/docs.md'], (_req, res, next) => {
     res.setHeader('Cache-Control', 'no-store');
     next();
   });
