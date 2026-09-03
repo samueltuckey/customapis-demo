@@ -47,6 +47,9 @@ export function registerTimesheetRoutes(f: PgrmFramework): void {
     // ── Optional — every line below is a CHOICE, not a requirement ─────────────────
     // All fields are filterable until you declare `filters.allow`; then only these are.
     filters: { allow: ['workDate', 'status', 'employeeId'] },
+    // Ordering is the second way to reach a column: `hideCostRate` runs long after the
+    // query is built, so `?sort=costRate` would rank the page by a rate it then hides.
+    sort: { deny: ['costRate'] },
     description: `List the timesheets in your read scope. ${COST_RATE_NOTE}`,
     consultedPermissions: [...TIMESHEET_PERMISSIONS],
     stageSettings: { processReturnData: { after: hideCostRate } },
