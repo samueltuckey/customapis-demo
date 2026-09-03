@@ -130,7 +130,7 @@ export function registerTimesheetRoutes(f: PgrmFramework): void {
       },
       // hooks for custom business logic - only approve once
       operation: { before: approveGuard, after: emitApproved },
-      // hide constRate if you done have permission
+      // hide costRate if you don't have permission
       processReturnData: { after: hideCostRate },
     },
     consultedPermissions: [...TIMESHEET_PERMISSIONS],
