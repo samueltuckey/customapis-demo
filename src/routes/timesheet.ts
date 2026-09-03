@@ -103,11 +103,11 @@ export function registerTimesheetRoutes(f: PgrmFramework): void {
 
   // POST /timesheets/:id/approve — a named business action.
   //
-  // No "command" concept and no bespoke handler: an ordinary `update` route on a custom
-  // path, so it inherits the entire pipeline — the row loaded under `FOR UPDATE` in a
-  // transaction, tenant-scoped down the 4-hop path, owner predicate applied, audited on
-  // commit, event drained only after. The demo wrote `approveGuard`, about ten lines; what
-  // it did not write is everything that makes that rule safe to run concurrently.
+  // A customised update on the timesheet, so it inherits the whole pipeline: the row
+  // loaded FOR UPDATE in a transaction, tenant-scoped down the four-hop path, owner
+  // predicate applied, audited on commit, event drained after. Two hooks on the operation
+  // stage add what this business action needs — `approveGuard` for the state rule, and
+  // `emitApproved` for a custom event.
   f.route({
     // ── Mandatory ──────────────────────────────────────────────────────────────────
     model: 'timesheets',
