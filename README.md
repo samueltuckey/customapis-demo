@@ -191,9 +191,14 @@ can quote it. Please don't open a public issue for that one.
 Everything else — a wrong status code, docs that disagree with the API, a broken link in here —
 is an ordinary issue.
 
+Expect a reply within three working days. This is a small project run by one person; there is no
+bounty, and there is genuine gratitude.
+
 **Not a bug, and please don't report it:** `npm install` failing, `pgrm` not resolving, the demo
-keys being public, the event socket showing you other companies' events. The first two are the
-point of the section at the top; the last two are marked `DEMO-ONLY` in the source with the reason.
+keys being public, the HMAC secret being in the source, `Access-Control-Allow-Origin: *`, the event
+socket showing you other companies' events, or anyone being able to write to the Scratch Sandbox.
+The first two are the point of the section at the top; the rest are marked `DEMO-ONLY` in the source
+with the reason — `grep -rn "DEMO-ONLY" src/ db/` finds every one.
 
 ---
 
