@@ -100,8 +100,13 @@ export function buildFramework(): PgrmFramework {
  */
 export function createApp(framework: PgrmFramework): express.Express {
   const app = express();
+  app.disable('x-powered-by');
 
   app.use(openCors());
+  app.use((_req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    next();
+  });
 
   // pgrm sends `no-store` on everything its router serves. These two are Express handlers
   // ahead of it, and both doc projections vary by `?key=` and by the bearer header — a CDN
