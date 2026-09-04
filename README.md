@@ -122,8 +122,7 @@ company does this row belong to", and it is the thing every scoping decision abo
 
 - **`src/routes/`** and **`src/plugins/`** are the application. `plugins/` holds the three seams —
   verify a credential, resolve a principal, publish committed events — and their shapes are the
-  production shapes. The implementations are valid rather than exemplary, and say where they fall
-  short.
+  production shapes.
 - **`src/demo/`** is scaffolding, quarantined on purpose ([README](src/demo/README.md)): a stand-in
   IdP, a fixture where your access-management system would be, a socket and a REST route so a
   browser can watch events arrive. **If you want to know how much code a real system needs, read
@@ -222,5 +221,4 @@ npm run transcript # regenerate TRANSCRIPT.md from a passing run
 ## Licence
 
 Source-available, not open source: you may read, quote and discuss this freely; you may not copy it
-into another project. See [LICENSE](./LICENSE). It is a reference, not a template — and since it
-cannot be run, "use" isn't a right anyone could exercise anyway.
+into another project. See [LICENSE](./LICENSE). It is a reference, not a template.

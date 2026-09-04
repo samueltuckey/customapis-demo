@@ -9,7 +9,7 @@
  * Express handlers rather than pgrm routes, for the same reason `/health` is: an OpenAPI
  * document wrapped in `{ data, meta }` is not one any tool will read.
  *
- * ── The trap this file exists to avoid ──────────────────────────────────────────────
+ * ── Two views, by design ────────────────────────────────────────────────────────────
  * pgrm filters docs by viewer, and no viewer means only *open* routes — a valid 200 with
  * `paths: {}`, which reads as an API with no endpoints. So an unauthenticated fetch here
  * returns the **unfiltered** spec and says so; adding a key narrows it to what that key
@@ -23,6 +23,88 @@ import { personaHolds, personaDisplayName, PERSONA_PROFILES } from '../plugins/g
 
 const TITLE = 'Custom APIs — timesheet demo';
 const APP = 'customapis';
+
+// ── Routes ─────────────────────────────────────────────────────────────────────────
+
+export function openApiDoc(framework: PgrmFramework): RequestHandler {
+  return (req, res) => {
+    const { routes, runtime } = framework.getRegistry();
+    const { viewer, persona } = viewerFor(req);
+    // No filtering here and no securityScheme override: visibility resolves the
+    // auto-derived permission names at boot (`resolvedPermissions`), and the scheme's
+    // description is projected from `auth.credential` + `auth.howToObtain` — declared
+    // once in `createFramework`, so this projection and docs.md cannot disagree.
+    const doc = generateOpenApi([...routes], runtime, {
+      title: TITLE,
+      viewer,
+      description: `${howToNarrow(persona)}\n\nGenerated from the live route registry on every request.`,
+      // Declared routes document themselves; raw handlers are described here and merged
+      // into the same spec. `/me` is the first route an agent reads, so it matters that
+      // it lands in the document.
+      customFragments: CUSTOM_ROUTES,
+    });
+    res.type('application/json').send(JSON.stringify(doc, null, 2));
+  };
+}
+
+export function humanDocs(framework: PgrmFramework): RequestHandler {
+  return (req, res) => {
+    const { routes, runtime } = framework.getRegistry();
+    const { viewer, persona } = viewerFor(req);
+    const bundle = generateHumanDocs([...routes], runtime, { title: TITLE, viewer });
+    res.type('text/markdown').send(renderMarkdown(bundle, persona));
+  };
+}
+
+/** `/llms.txt` — the convention that tells an agent where the good stuff is. */
+export function llmsTxt(baseUrl: () => string): RequestHandler {
+  return (_req, res) => {
+    const base = baseUrl();
+    res.type('text/plain').send(
+      `# Custom APIs — timesheet demo
+
+> A live multi-tenant timesheet API. Keys are public, rotate every two hours, and need no
+> signup. Every persona sees a different slice of the same data, and the interesting
+> outcomes are the refusals.
+
+## Start here
+- ${base}/keys        Public. The current key set. Fetch this first.
+- ${base}/me          Who your key is, what it can reach, and what it will be REFUSED.
+- ${base}/challenges  Public. Seven reads and a seven-step write sequence — see below.
+- ${base}/docs.md     Full documentation. Add ?key=<your key> to see only your own routes.
+
+## Auth
+Every API call needs \`Authorization: Bearer <key>\` — any key from /keys, no signup.
+Keys rotate every two hours; the previous set works for 15 minutes past a boundary.
+
+## The challenges, and why they are two sets
+\`reads\` — seven challenges, ids challenge-1 … challenge-6 (challenge-3b sits between 3
+and 4 and is never renumbered). Nothing is consumed, so run them in any order, as often
+as you like, alongside anyone else doing the same.
+\`writeSequence\` — seven steps, in order. Step 1 POSTs a timesheet and returns its id;
+every later {id} is that id. It is repeatable for exactly that reason: a timesheet
+approves once, so nothing here re-approves a row it did not make. Do not swap in a fixed
+id — that works for one run and 409s forever after.
+
+## Read scope is not write scope
+The curated companies (Harbourline, Kestrel) are read-only for EVERY key. Each key's
+write permissions point only at the shared Scratch Sandbox (company 3). A write against
+curated data is a 404 by design — the refusal does not admit the row exists.
+
+## Machine-readable
+- ${base}/openapi.json            Every route this API exposes.
+- ${base}/openapi.json?key=<key>  Only the routes that key can call. Diff them.
+
+## Try to break it
+The demo is built so the interesting result is a refusal. Fetch a colleague's timesheet, a
+different department's, a different company's, and one that never existed — all four
+return an identical 404. You are meant to attempt this; nothing here is real data.
+`,
+    );
+  };
+}
+
+// ── Code ───────────────────────────────────────────────────────────────────────────
 
 /** An "everything" viewer. NOT the same as passing no viewer, which means the PUBLIC
  *  projection — open routes only. An empty `DocViewer` means "sees everything". */
@@ -120,84 +202,6 @@ const CUSTOM_ROUTES: Record<string, Record<string, any>> = {
     },
   },
 };
-
-export function openApiDoc(framework: PgrmFramework): RequestHandler {
-  return (req, res) => {
-    const { routes, runtime } = framework.getRegistry();
-    const { viewer, persona } = viewerFor(req);
-    // No filtering here and no securityScheme override: visibility now resolves the
-    // auto-derived permission names at boot (`resolvedPermissions`), and the scheme's
-    // description is projected from `auth.credential` + `auth.howToObtain` — declared
-    // once in `createFramework`, so this projection and docs.md cannot disagree.
-    const doc = generateOpenApi([...routes], runtime, {
-      title: TITLE,
-      viewer,
-      description: `${howToNarrow(persona)}\n\nGenerated from the live route registry on every request.`,
-      // Declared routes document themselves; raw handlers are described here and merged
-      // into the same spec. `/me` is the first route an agent reads, so it matters that
-      // it lands in the document.
-      customFragments: CUSTOM_ROUTES,
-    });
-    res.type('application/json').send(JSON.stringify(doc, null, 2));
-  };
-}
-
-export function humanDocs(framework: PgrmFramework): RequestHandler {
-  return (req, res) => {
-    const { routes, runtime } = framework.getRegistry();
-    const { viewer, persona } = viewerFor(req);
-    const bundle = generateHumanDocs([...routes], runtime, { title: TITLE, viewer });
-    res.type('text/markdown').send(renderMarkdown(bundle, persona));
-  };
-}
-
-/** `/llms.txt` — the convention that tells an agent where the good stuff is. */
-export function llmsTxt(baseUrl: () => string): RequestHandler {
-  return (_req, res) => {
-    const base = baseUrl();
-    res.type('text/plain').send(
-      `# Custom APIs — timesheet demo
-
-> A live multi-tenant timesheet API. Keys are public, rotate every two hours, and need no
-> signup. Every persona sees a different slice of the same data, and the interesting
-> outcomes are the refusals.
-
-## Start here
-- ${base}/keys        Public. The current key set. Fetch this first.
-- ${base}/me          Who your key is, what it can reach, and what it will be REFUSED.
-- ${base}/challenges  Public. Seven reads and a seven-step write sequence — see below.
-- ${base}/docs.md     Full documentation. Add ?key=<your key> to see only your own routes.
-
-## Auth
-Every API call needs \`Authorization: Bearer <key>\` — any key from /keys, no signup.
-Keys rotate every two hours; the previous set works for 15 minutes past a boundary.
-
-## The challenges, and why they are two sets
-\`reads\` — seven challenges, ids challenge-1 … challenge-6 (challenge-3b sits between 3
-and 4 and is never renumbered). Nothing is consumed, so run them in any order, as often
-as you like, alongside anyone else doing the same.
-\`writeSequence\` — seven steps, in order. Step 1 POSTs a timesheet and returns its id;
-every later {id} is that id. It is repeatable for exactly that reason: a timesheet
-approves once, so nothing here re-approves a row it did not make. Do not swap in a fixed
-id — that works for one run and 409s forever after.
-
-## Read scope is not write scope
-The curated companies (Harbourline, Kestrel) are read-only for EVERY key. Each key's
-write permissions point only at the shared Scratch Sandbox (company 3). A write against
-curated data is a 404 by design — the refusal does not admit the row exists.
-
-## Machine-readable
-- ${base}/openapi.json            Every route this API exposes.
-- ${base}/openapi.json?key=<key>  Only the routes that key can call. Diff them.
-
-## Try to break it
-The demo is built so the interesting result is a refusal. Fetch a colleague's timesheet, a
-different department's, a different company's, and one that never existed — all four
-return an identical 404. You are meant to attempt this; nothing here is real data.
-`,
-    );
-  };
-}
 
 /**
  * What the access management system says this deployment grants: which permissions, at
