@@ -1,6 +1,8 @@
 /**
  * The published challenges, as data: seven reads and one seven-step write sequence.
  *
+ * DEMO-ONLY: an API does not normally ship its own exercises.
+ *
  * ONE definition, TWO consumers: `scripts/replay.ts` runs both sets against a live server
  * and asserts every expectation; `routes/challenges.ts` serves them at `GET /challenges`,
  * so the walkthrough a visitor is told to work through is the one the harness proves. A

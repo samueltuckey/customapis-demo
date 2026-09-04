@@ -26,7 +26,7 @@
 -- caller. Their shape is fixed and boot-validated — `*_by_id` nullable, but
 -- `*_by_display_name` and both timestamps NOT NULL, because a display name is always
 -- populated ('System' for non-user actions) and an unset audit timestamp is meaningless.
--- `pgrm check` rejects the schema otherwise, which is how this comment came to exist.
+-- `pgrm check` rejects the schema otherwise.
 
 -- Drop the SCHEMA, not a list of tables. A named list only removes what the list still
 -- names, so renaming a table (singular → plural, when the URL is derived from the model
@@ -40,8 +40,7 @@ CREATE SCHEMA public;
 -- ONE sequence for every application table. A primary key is therefore
 -- globally unique across companies, so `timesheet 1041` names exactly one row in the
 -- whole deployment — which is what makes the cross-company 404 a proof rather than a
--- coincidence. It also kills v0.2's "same id in two companies" framing at the schema
--- level: that cannot happen here, by construction.
+-- coincidence. The same id in two companies cannot happen here, by construction.
 CREATE SEQUENCE global_id_seq START 1000;
 
 

@@ -14,6 +14,10 @@
 -- PK, same indexes, same clock. `simple` → `partitioned` is therefore a pure storage
 -- migration with no backfill, no API change and no sink change (spec §4.1). The
 -- partitioned form is `npx pgrm db sql audit_log_partitioned`.
+--
+-- Retention on this profile is MANUAL (spec §4.1): the framework ships no DELETE job.
+-- When retention gets real, upgrade to the `partitioned` profile, where retention is
+-- DETACH + DROP (a metadata operation) rather than a bulk DELETE.
 
 CREATE TABLE IF NOT EXISTS audit_log (
   id                  BIGSERIAL     NOT NULL,

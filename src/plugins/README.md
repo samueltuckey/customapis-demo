@@ -3,8 +3,8 @@
 These are the framework's **pluggable seams**: the places pgrm deliberately has no
 opinion, and hands the decision to the application. The interfaces are the real ones, and
 a production system implements exactly these. So does this one — every file here is a
-working implementation rather than a mock. What they are not is *best practice*: each is
-sized for a public demo, and each carries a `DEMO-ONLY` block saying where it falls short.
+working implementation rather than a mock. These plugins were built for demo purposes, not a
+production api, and each carries a `DEMO-ONLY` block describing the decisions made for the demo.
 
 Read those blocks. These three files are where the demo looks most like an application,
 which is also where copying it without reading would cost the most.

@@ -1,7 +1,7 @@
 # Generated models — cheatsheet
 
 Association `as` names are deterministic `table__fkColumn` (§14.1) — reference these
-exact names in views (`sequelizeIncludeOptions.as`) and hooks.
+exact names in views (`ViewInclude.as`, at every nesting depth) and hooks.
 
 ## demo_events (PK: id)
 - DB defaults (optional on create — the database supplies these):
@@ -67,5 +67,3 @@ exact names in views (`sequelizeIncludeOptions.as`) and hooks.
   - `last_updated_by_display_name` → "System"
   - `last_updated_at` → current server time
 
-## Skipped tables (not usable by pgrm — need a single bigint PK, §14.1)
-- audit_log: no primary key (§14.1 needs one bigint PK)

@@ -6,8 +6,6 @@
  * is this file's job, and yours. Events drain AFTER the transaction commits, so nothing here
  * can publish a change that rolled back.
  *
- * Valid, not exemplary: the transport below is sized for a demo, and says so.
- *
  * ═══════════════════════════════════════════════════════════════════════════════════
  * DEMO-ONLY — DOES NOT SCALE, AND ONE PART IS UNSAFE. Four reasons, worst first:
  *
@@ -40,35 +38,9 @@ const KEEP_ROWS = 200;
 type Listener = (payload: string) => void;
 const listeners = new Set<Listener>();
 
-/** Subscribe a connected socket. Returns the unsubscribe. */
-export function subscribe(listener: Listener): () => void {
-  listeners.add(listener);
-  return () => listeners.delete(listener);
-}
-
-export function listenerCount(): number {
-  return listeners.size;
-}
-
 /** The connection the publisher was built with, so the read side need not reach into
  *  framework internals for one. */
 let connection: Sequelize | undefined;
-
-/** Most recent events, newest first. Throws if the publisher was never created: an empty
- *  list would be indistinguishable from "no events have happened". */
-export async function readRecentEvents(limit = 50): Promise<Array<Record<string, unknown>>> {
-  if (!connection) throw new Error('demo publisher was never created; no connection to read from');
-  return (await connection.query(
-    // `correlationId` is selected so the backfill matches the socket field for field. A
-    // client correlating an event to its own request must get the same answer whether the
-    // event arrived live or was read back after a reload.
-    `SELECT event_type AS "eventType", model, tenant_id AS "tenantId",
-            object_data AS "objectData", correlation_id AS "correlationId",
-            emitted_at AS "emittedAt"
-       FROM demo_events ORDER BY emitted_at DESC, id DESC LIMIT $1`,
-    { bind: [limit], type: QueryTypes.SELECT },
-  )) as Array<Record<string, unknown>>;
-}
 
 export function createPublisher(sequelize: Sequelize): Publisher {
   connection = sequelize;
@@ -127,4 +99,30 @@ export function createPublisher(sequelize: Sequelize): Publisher {
       }
     },
   };
+}
+
+/** Subscribe a connected socket. Returns the unsubscribe. */
+export function subscribe(listener: Listener): () => void {
+  listeners.add(listener);
+  return () => listeners.delete(listener);
+}
+
+export function listenerCount(): number {
+  return listeners.size;
+}
+
+/** Most recent events, newest first. Throws if the publisher was never created: an empty
+ *  list would be indistinguishable from "no events have happened". */
+export async function readRecentEvents(limit = 50): Promise<Array<Record<string, unknown>>> {
+  if (!connection) throw new Error('demo publisher was never created; no connection to read from');
+  return (await connection.query(
+    // `correlationId` is selected so the backfill matches the socket field for field. A
+    // client correlating an event to its own request must get the same answer whether the
+    // event arrived live or was read back after a reload.
+    `SELECT event_type AS "eventType", model, tenant_id AS "tenantId",
+            object_data AS "objectData", correlation_id AS "correlationId",
+            emitted_at AS "emittedAt"
+       FROM demo_events ORDER BY emitted_at DESC, id DESC LIMIT $1`,
+    { bind: [limit], type: QueryTypes.SELECT },
+  )) as Array<Record<string, unknown>>;
 }
