@@ -26,6 +26,29 @@ something against it from a browser without asking anyone's permission.
 
 ---
 
+## The live API
+
+**<https://timesheetdemo.customapis.co>**
+
+Public, no signup. Everything linked below opens in a browser; the rest need a key from `/keys`.
+
+| | |
+|---|---|
+| [`/keys`](https://timesheetdemo.customapis.co/keys) | The current key set, one per persona |
+| [`/challenges`](https://timesheetdemo.customapis.co/challenges) | Seven reads and a seven-step write sequence, as data: persona, request, body and expected status for every step |
+| [`/docs.md`](https://timesheetdemo.customapis.co/docs.md) | Human documentation, projected through the permissions of the key you pass |
+| [`/openapi.json`](https://timesheetdemo.customapis.co/openapi.json) | The same route registry, as OpenAPI |
+| [`/llms.txt`](https://timesheetdemo.customapis.co/llms.txt) | Orientation for agents |
+| [`/events/recent`](https://timesheetdemo.customapis.co/events/recent) | Committed events, newest first. `wss://timesheetdemo.customapis.co/events/live` is the same stream, live |
+| [`/health`](https://timesheetdemo.customapis.co/health) | Liveness |
+| `/me` | Who your key is, what it reaches, and what it will be refused |
+| `/timesheets` `/employees` `/invoices` | The application |
+| `/activity` | Your company's audit trail, as an ordinary search route |
+
+List routes are declared `SEARCH` and mount as `GET`, so every resource above is a `GET`.
+
+---
+
 ## Start here
 
 Keys are public and rotate every two hours. Load the current set:
